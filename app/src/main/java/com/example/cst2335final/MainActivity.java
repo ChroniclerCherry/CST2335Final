@@ -17,15 +17,5 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //click sends to replace with lambda - temp button set up
-        bbc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View click) {
-
-                Intent goToNewsReader = new Intent(MainActivity.this, NewsReaderView.class);
-                // goToProfile.putExtra("EMAIL",email.getText().toString());
-                MainActivity.this.startActivity(goToNewsReader);
-            }
-        });
     }
 }
