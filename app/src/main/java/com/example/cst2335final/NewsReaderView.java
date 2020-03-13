@@ -5,30 +5,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ArticleList extends AppCompatActivity {
+//TODO Java docs/comments/descrip
+//todo add list view of news articles that pop up a frame NewsReaderFrame with details when selected
+//This class is the main page and List View of the articles on BBC News Reader
+
+public class NewsReaderView extends AppCompatActivity {
 
     //TODO check ArrayLIst settings
-    private ArrayList<ArticleActivity> articleElements = new ArrayList<ArticleActivity>(Arrays.<ArticleActivity>asList());
+    private ArrayList<NewsReaderItem> articleElements = new ArrayList<NewsReaderItem>(Arrays.<NewsReaderItem>asList());
 
     private ArticleListAdapter articleListAdapter;
-    Button add;
-    Button delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.article_view);
+        setContentView(R.layout.news_reader_view);
 
-        ListView articleList = findViewById(R.id.articleList);
+        ListView articleList = findViewById(R.id.newsList);
 
         articleList.setAdapter(articleListAdapter = new ArticleListAdapter());
 
@@ -46,7 +46,7 @@ public class ArticleList extends AppCompatActivity {
             // display at row position in the list.
             // Returns the article bject that corresponds to int passed in
             @Override
-            public ArticleActivity getItem(int position) {
+            public NewsReaderItem getItem(int position) {
                 return articleElements.get(position);
             }
 
@@ -64,13 +64,12 @@ public class ArticleList extends AppCompatActivity {
                 //LayoutInflater object to load an XML layout file
                 LayoutInflater articleInflater = getLayoutInflater();
 
-                ArticleActivity artc = this.getItem(position);
+                NewsReaderItem artc = this.getItem(position);
 
                 //creates a new view or layout object from xml
                 View articleView;
 
-                articleView = articleInflater.inflate(R.layout.article_view, parent, false);
-
+                articleView = articleInflater.inflate(R.layout.news_reader_view, parent, false);
 
                 //set text for row
                 // TextView articleTextView = articleViewView.findViewById(R.id.articleView);
