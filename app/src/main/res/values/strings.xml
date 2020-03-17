@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">CST2335Final</string>
+    <string name="go_to_karls_activity">NASA Earthy Image Database</string>
+    <string name="search_text">Search For An Image!</string>
+    <string name="lat_hint">Enter Latitude</string>
+    <string name="long_hint">Enter Longitude</string>
+    <string name="search_btn">Search</string>
+    <string name="view_favorites_btn">View Favorites</string>
+    <string name="favorites_list">Favorites List</string>
+    <string name="favorites_list_desc">Favorite an image to save for later!</string>
+
+    <string name="latitude">Latitude: </string>
+    <string name="longitude">Longitude: </string>
+    <string name="date">Date: </string>
+    <string name="add_to_favorites">Add to Favorites!</string>
+    <string name="add_snackbar">Added to favorites!</string>
+
+    <string name="search_btn_toast">Retrieving Image...</string>
+    <string name="query_error_toast">Sorry! No image available for those coordinates</string>
+
 </resources>

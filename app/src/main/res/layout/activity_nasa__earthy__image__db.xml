@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Nasa_Earthy_Image_Db"
+    android:orientation="vertical"
+    android:weightSum="2">
+
+    <!-- Earthy Image Layout -->
+    <LinearLayout
+        android:id="@+id/fragmentLocation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:background="#b7d7e8"
+        android:layout_weight="1"
+        android:weightSum="13">
+        <!-- Will edit these values once data is pulled from NASA api -->
+        <ImageView
+            android:id="@+id/earthy_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_weight="1"
+            style="?android:attr/progressBarStyleHorizontal"/>
+
+        <TextView
+            android:id="@+id/latitude_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/longitude_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/date_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <!--set to invisible until we get values from api -->
+        <Button
+            android:id="@+id/add_to_favorites_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_to_favorites"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:backgroundTint="#87bdd8"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/enter_lat_long"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="#daebe8">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="7">
+
+                <TextView
+                    android:id="@+id/search_for_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:text="@string/search_text"
+                    android:textSize="25dp"
+                    android:padding="10dp"/>
+
+                <EditText
+                    android:id="@+id/enter_latitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/lat_hint"
+                    android:padding="5dp"/>
+
+                <EditText
+                    android:id="@+id/enter_longitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/long_hint"
+                    android:padding="5dp"/>
+
+                <Button
+                    android:id="@+id/search_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/search_btn"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:backgroundTint="#87bdd8"/>
+
+                <Button
+                    android:id="@+id/view_saved_img_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/view_favorites_btn"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:backgroundTint="#87bdd8"/>
+
+            </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
