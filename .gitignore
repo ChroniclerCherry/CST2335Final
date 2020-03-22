@@ -12,3 +12,5 @@
 /captures
 .externalNativeBuild
 .cxx
+activity_main.xml
+MainActivity.java
