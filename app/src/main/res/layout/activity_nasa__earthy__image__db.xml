@@ -5,59 +5,85 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Nasa_Earthy_Image_Db"
+    android:background="#b7d7e8"
     android:orientation="vertical"
-    android:weightSum="2">
+    android:weightSum="2.25">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:layout_weight="0.05"
+        style="?android:attr/progressBarStyleHorizontal"/>
 
     <!-- Earthy Image Layout -->
     <LinearLayout
         android:id="@+id/fragmentLocation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:background="#b7d7e8"
+        android:orientation="horizontal"
         android:layout_weight="1"
-        android:weightSum="13">
+        android:weightSum="2">
         <!-- Will edit these values once data is pulled from NASA api -->
         <ImageView
             android:id="@+id/earthy_image"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="8"/>
+            android:layout_weight="1"/>
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/latitude_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/longitude_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/date_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight=".20"
+        android:weightSum="4">
+
+        <EditText
+            android:id="@+id/name_favorite"
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="?android:attr/progressBarStyleHorizontal"/>
+            android:hint="@string/favorite_name"
+            android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/latitude_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/longitude_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/date_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-        <!--set to invisible until we get values from api -->
         <Button
             android:id="@+id/add_to_favorites_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:backgroundTint="#87bdd8"
             android:text="@string/add_to_favorites"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            android:backgroundTint="#87bdd8"/>
+            android:visibility="invisible" />
 
     </LinearLayout>
 

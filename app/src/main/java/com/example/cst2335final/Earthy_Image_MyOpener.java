@@ -21,7 +21,7 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
     /**
      * {@value} Constant for version number of database. If database version differs from this value, a new database will be created.
      */
-    protected final static int VERSION_NUM = 1;
+    protected final static int VERSION_NUM = 2;
     /**
      * {@value} Constant for name of the database table.
      */
@@ -30,6 +30,10 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
      * {@value} Constant for the name of the date column.
      */
     public final static String DATE = "date";
+    /**
+     * {@value} Constant for the name of the name column.
+     */
+    public final static String NAME = "name";
     /**
      * {@value} Constant for the name of the latitude column.
      */
@@ -59,6 +63,7 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + NAME + " text,"
                 + DATE + " text,"
                 + LATITUDE  + " text,"
                 + LONGITUDE + " text);");  // add or remove columns

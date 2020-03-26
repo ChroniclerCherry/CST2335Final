@@ -12,12 +12,14 @@
  */
 package com.example.cst2335final;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -28,6 +30,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -39,9 +44,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -51,9 +58,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -72,6 +81,10 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
      * Represents the "add to favorites" button in activity_nasa_earthy_image_db.xml.
      */
     private Button addToFavoritesBtn;
+    /**
+     * Represents the "give title" edit text in activity_nasa_earthy_image_db.xml.
+     */
+    private EditText favNameEditText;
     /**
      * Represents the latitude input box in activity_nasa_earthy_image_db.xml.
      */
@@ -116,6 +129,14 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
      *Progress bar variable for the progress bar in activity_nasa_earthy_image_db.xml.
      */
     private ProgressBar progressBar;
+    /**
+     * SharedPreferences variable for storing latitude and longitude strings
+     */
+    private SharedPreferences prefs = null;
+    /**
+     * Toolbar variable for the Toolbar in activity_nasa_earthy_image_db.xml.
+     */
+    Toolbar tbar;
 
     /**
      * Inside the onCreate method we initialize all the widgets from activity_nasa_earthy_image_db.xml and adds button action listeners that will
@@ -126,6 +147,10 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nasa__earthy__image__db);
+
+        //Show the toolbar
+        tbar = findViewById(R.id.toolbar);
+        setSupportActionBar(tbar);
 
         //Widgets in top portion
         addToFavoritesBtn = findViewById(R.id.add_to_favorites_btn);
@@ -138,13 +163,27 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         //Widgets in input section
         searchBtn = findViewById(R.id.search_btn);
         favoritesBtn = findViewById(R.id.view_saved_img_btn);
+        favNameEditText = findViewById(R.id.name_favorite);
         latitudeEditText = findViewById(R.id.enter_latitude);
         longitudeEditText = findViewById(R.id.enter_longitude);
 
-        //Search button toast message and query
+        //Load shared preference
+        prefs = getSharedPreferences("FileName", Context.MODE_PRIVATE);
+        latitudeEditText.setText(prefs.getString("latitudeString", ""));
+        longitudeEditText.setText(prefs.getString("longitudeString", ""));
+
+        //Search button query
         String searchBtnToastMessage = getResources().getString(R.string.search_btn_toast);
         searchBtn.setOnClickListener( v -> {
-            Toast.makeText(this, searchBtnToastMessage , Toast.LENGTH_LONG).show();
+            if (isEmpty(latitudeEditText)) {
+                latitudeEditText.setError(getResources().getString(R.string.is_empty));;
+                return;
+            }
+
+            if (isEmpty(longitudeEditText)) {
+                longitudeEditText.setError(getResources().getString(R.string.is_empty));;
+                return;
+            }
 
             //make progress bar visible
             progressBar.setVisibility(View.VISIBLE);
@@ -153,11 +192,9 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
             String earthyImageUrl = "https://api.nasa.gov/planetary/earth/imagery/?lon=" + longitudeEditText.getText().toString() + "&lat=" + latitudeEditText.getText().toString() + "&date=2014-02-01&api_key=iY2EZsiVhnakTqyq7aYKtflTqZ0wdmWjeZKbinKU";
             ImageQuery imageQuery = new ImageQuery();
             imageQuery.execute(earthyImageUrl);
-            //setting text after query
-            latitudeTextView.setText("Latitude: " + latitudeEditText.getText().toString());
-            longitudeTextView.setText("Longitude: " + longitudeEditText.getText().toString());
-            latitudeEditText.setText("");
-            longitudeEditText.setText("");
+
+            //saving input for shared preferences
+            saveSharedPrefs(latitudeEditText.getText().toString(), longitudeEditText.getText().toString());
         });
 
         //Add to Favorites
@@ -165,26 +202,29 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
             String latitude = latitudeTextView.getText().toString();
             String longitude = longitudeTextView.getText().toString();
             String date = dateTextView.getText().toString();
+            String name = favNameEditText.getText().toString();
 
-            if (!latitude.equals("") && !longitude.equals("")) {
-                //Get a db connection
-                Earthy_Image_MyOpener dbOpener = new Earthy_Image_MyOpener(this);
-                db = dbOpener.getWritableDatabase();
+            if (!isEmpty(favNameEditText)) {
+                    //Get a db connection
+                    Earthy_Image_MyOpener dbOpener = new Earthy_Image_MyOpener(this);
+                    db = dbOpener.getWritableDatabase();
 
-                //add new row to db
-                ContentValues newRowValues = new ContentValues();
+                    //add new row to db
+                    ContentValues newRowValues = new ContentValues();
 
-                //value for db columns
-                newRowValues.put(Earthy_Image_MyOpener.LATITUDE, latitude);
-                newRowValues.put(Earthy_Image_MyOpener.LONGITUDE, longitude);
-                newRowValues.put(Earthy_Image_MyOpener.DATE, date);
+                    //value for db columns
+                    newRowValues.put(Earthy_Image_MyOpener.LATITUDE, latitude);
+                    newRowValues.put(Earthy_Image_MyOpener.LONGITUDE, longitude);
+                    newRowValues.put(Earthy_Image_MyOpener.DATE, date);
+                    newRowValues.put(Earthy_Image_MyOpener.NAME, name);
 
-                //insert into db which returns id
-                long newId = db.insert(Earthy_Image_MyOpener.TABLE_NAME, null, newRowValues);
+                    //insert into db which returns id
+                    long newId = db.insert(Earthy_Image_MyOpener.TABLE_NAME, null, newRowValues);
 
-                Snackbar addToDbSnackbar = Snackbar.make(addToFavoritesBtn, getResources().getString(R.string.add_snackbar), Snackbar.LENGTH_LONG);
-                addToDbSnackbar.show();
+                    Snackbar addToDbSnackbar = Snackbar.make(addToFavoritesBtn, getResources().getString(R.string.add_snackbar), Snackbar.LENGTH_LONG);
+                    addToDbSnackbar.show();
             }
+            else favNameEditText.setError(getResources().getString(R.string.is_empty));
         });
 
         //Go to favorites
@@ -192,6 +232,66 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         favoritesBtn.setOnClickListener( click -> startActivity(goToFavorites));
 
     } //end of onCreate method
+
+    /**
+     * Method to check if an EditText is empty
+     * @param etText EditText variable from XML
+     * @return boolean value to represent if EditText is empty
+     */
+    private boolean isEmpty(EditText etText) {
+        return etText.getText().toString().trim().length() == 0;
+    }
+
+    /**
+     * Method to create the options menu
+     * @param menu Menu variable for the menu we want to inflate
+     * @return boolean value to indicate menu was inflated
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.example_menu, menu);
+        return true;
+    }
+
+    /**
+     * Method for handling what happens when an option is selected from menu.
+     * @param item MenuItem object that was clicked.
+     * @return boolean value to represent action is completed.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String message = null;
+
+        switch(item.getItemId()) {
+            case R.id.help_item:
+                message = getResources().getString(R.string.help_menu_item);
+        }
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(getResources().getString(R.string.menu_title))
+                //Message
+                .setMessage(message)
+                //what the Yes button does:
+                .setPositiveButton(getResources().getString(R.string.ok), (click, arg) -> { })
+                //Show the dialog
+                .create().show();
+
+        return true;
+    }
+
+    /**
+     * Method to save the last input in the latitude and longitude edit texts
+     * @param stringLatitude String for latitude
+     * @param stringLongitude String for Longitude
+     */
+    private void saveSharedPrefs(String stringLatitude, String stringLongitude) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("latitudeString", stringLatitude);
+        editor.putString("longitudeString", stringLongitude);
+        editor.commit();
+    }
 
     /**
      * Class extends from AsyncTask and is used for performing the image query with Google's Earthy Image API,
@@ -218,13 +318,17 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
          * Bitmap object to store the image from the API.
          */
         private Bitmap image;
+        /**
+         * String to store error message while loading from api.
+         */
+        private String returnString = null;
 
         /**
          * Query using Google's Earthy Image API done in this method, and will set values for date, latitude, longitude, imageUrl, and image.
          * @param args Passing a single string parameter being the API url with the latitude and longitude values from the user.
          * @return String error message
          */
-        @SuppressLint("WrongThread")
+        @Override
         protected String doInBackground(String... args) {
             String returnString = null;
 
@@ -268,13 +372,16 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
                 }   publishProgress(75);
 
             }
-            catch (FileNotFoundException e) {
-                return getResources().getString(R.string.query_error_toast);
-                // find a way to inform user error was made and not let it exit out - bad params (lat 2, long 77)
+            // find a way to inform user error was made and not let it crash - bad params (lat 2, long 77)
+            catch (FileNotFoundException fnfe) {
+                returnString = "FileNotFoundException";
             }
-
-            catch (Exception e) {
-                returnString = "error";
+            catch (MalformedURLException mfe) {
+                returnString = "MalFormed URL exception";
+            } catch (IOException ioe) {
+                returnString = "IOException";
+            } catch (JSONException jsone) {
+                returnString = "JSON Exception";
             }
             publishProgress(100);
             return returnString;
@@ -288,10 +395,21 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         protected void onPostExecute(String sentFromDoInBackground) {
             super.onPostExecute(sentFromDoInBackground);
 
-            imageImageView.setImageBitmap(image);
-            dateTextView.setText("Date: " + date.substring(0,10));
-            progressBar.setVisibility(View.INVISIBLE);
-            addToFavoritesBtn.setVisibility(View.VISIBLE);
+            if(returnString != null) {
+                imageImageView.setImageBitmap(image);
+                dateTextView.setText("Date: " + date.substring(0, 10));
+                latitudeTextView.setText("Latitude: " + latitudeEditText.getText().toString());
+                longitudeTextView.setText("Longitude: " + longitudeEditText.getText().toString());
+                progressBar.setVisibility(View.INVISIBLE);
+                favNameEditText.setVisibility(View.VISIBLE);
+                addToFavoritesBtn.setVisibility(View.VISIBLE);
+            }
+            //A lot of coordinates do not contain images, so we show error toast message to user
+            else {
+                Toast errorToast = Toast.makeText(Nasa_Earthy_Image_Db.this, getResources().getString(R.string.error_toast), Toast.LENGTH_SHORT);
+                errorToast.show();
+                progressBar.setVisibility(View.INVISIBLE);
+            }
         }
 
         /**

@@ -12,11 +12,15 @@ package com.example.cst2335final;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -39,6 +43,12 @@ public class Favorites_List extends AppCompatActivity {
      * SQLiteDatabase variable for accessing our database.
      */
     SQLiteDatabase db;
+    Toolbar tbar;
+    public static final String DATE = "DATE";
+    public static final String LATITUDE = "LATITUDE";
+    public static final String LONGITUDE = "LONGITUDE";
+    public static final String ID = "ID";
+    public static final String NAME = "NAME";
 
     /**
      * Method will initialize widget variables from xml and call loadDataFromDatabase() to populate the ListView with information from the saved queries.
@@ -48,6 +58,10 @@ public class Favorites_List extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites__list);
+
+        //Show the toolbar
+        tbar = findViewById(R.id.toolbar_favs);
+        setSupportActionBar(tbar);
 
         //Adapter for favorites ListView
         ListView myList = findViewById(R.id.fav_images_listview);
@@ -59,26 +73,82 @@ public class Favorites_List extends AppCompatActivity {
         //Action when longclicking a list object
         myList.setOnItemLongClickListener( (p, b, pos, id) -> {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setTitle("Do you want to delete this")
+            alertDialogBuilder.setTitle(getResources().getString(R.string.alert_title))
 
                     //Message
-                    .setMessage("Just click Yes to delete")
+                    .setMessage(getResources().getString(R.string.alert_message))
 
                     //what the Yes button does:
-                    .setPositiveButton("Yes", (click, arg) -> {
+                    .setPositiveButton(getResources().getString(R.string.yes), (click, arg) -> {
                         deleteFavorite(elements.get(pos));
                         elements.remove(pos);
                         myAdapter.notifyDataSetChanged();
                     })
                     //What the No button does:
-                    .setNegativeButton("No", (click, arg) -> { })
+                    .setNegativeButton(getResources().getString(R.string.no), (click, arg) -> { })
 
                     //Show the dialog
                     .create().show();
             return true;
         });
 
+        //Action when clicking a list object
+        myList.setOnItemClickListener((list, item, position, id) -> {
+            //Creating bundle to pass data to the new fragment
+            Bundle dataToPass = new Bundle();
+            dataToPass.putString(DATE, elements.get(position).getDate());
+            dataToPass.putString(LATITUDE, elements.get(position).getLatitude());
+            dataToPass.putString(LONGITUDE, elements.get(position).getLongitude());
+            dataToPass.putString(ID, Long.toString(elements.get(position).getId()));
+
+            DetailsFragment dFragment = new DetailsFragment(); //Creating the fragment
+            dFragment.setArguments(dataToPass); //Passing the bundle of information
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentLocation, dFragment) //Add the fragment in FrameLayout
+                    .commit(); //Load the fragment
+        });
+
     } //end of onCreate
+
+    /**
+     * Method to create the options menu
+     * @param menu Menu variable for the menu we want to inflate
+     * @return boolean value to indicate menu was inflated
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.example_menu, menu);
+        return true;
+    }
+
+    /**
+     * Method for handling what happens when an option is selected from menu.
+     * @param item MenuItem object that was clicked.
+     * @return boolean value to represent action is completed.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String message = null;
+
+        switch(item.getItemId()) {
+            case R.id.help_item:
+                message = getResources().getString(R.string.help_menu_favs);
+        }
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(getResources().getString(R.string.menu_title_favs))
+                //Message
+                .setMessage(message)
+                //what the Yes button does:
+                .setPositiveButton(getResources().getString(R.string.ok), (click, arg) -> { })
+                //Show the dialog
+                .create().show();
+
+        return true;
+    }
 
     /**
      * Class extends BaseAdapter and provides methods for retrieving count, item, id, or the view for the ListView.
@@ -119,14 +189,8 @@ public class Favorites_List extends AppCompatActivity {
             newView = inflater.inflate(R.layout.earthy_image_listview, parent, false);
 
             //set values for the row
-            TextView listViewLatitude = newView.findViewById(R.id.listView_latitude);
-            listViewLatitude.setText(elements.get(position).getLatitude());
-
-            TextView listViewLongitude = newView.findViewById(R.id.listview_longitude);
-            listViewLongitude.setText(elements.get(position).getLongitude());
-
-            TextView listViewDate = newView.findViewById(R.id.listView_date);
-            listViewDate.setText(elements.get(position).getDate());
+            TextView listViewLatitude = newView.findViewById(R.id.listView_favName);
+            listViewLatitude.setText(elements.get(position).getName());
 
             return newView;
         }
@@ -141,11 +205,12 @@ public class Favorites_List extends AppCompatActivity {
         db = dbOpener.getWritableDatabase();
 
         //Array to store column names
-        String[] columns = {Earthy_Image_MyOpener.COL_ID, Earthy_Image_MyOpener.DATE, Earthy_Image_MyOpener.LATITUDE, Earthy_Image_MyOpener.LONGITUDE};
+        String[] columns = {Earthy_Image_MyOpener.COL_ID, Earthy_Image_MyOpener.NAME, Earthy_Image_MyOpener.DATE, Earthy_Image_MyOpener.LATITUDE, Earthy_Image_MyOpener.LONGITUDE};
         //Query for all results
         Cursor results = db.query(false,Earthy_Image_MyOpener.TABLE_NAME,columns,null,null,null,null,null,null);
 
         //Getting column indices
+        int nameIndex = results.getColumnIndex(Earthy_Image_MyOpener.NAME);
         int dateIndex = results.getColumnIndex(Earthy_Image_MyOpener.DATE);
         int latitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LATITUDE);
         int longitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LONGITUDE);
@@ -153,13 +218,14 @@ public class Favorites_List extends AppCompatActivity {
 
         //Iterate over results, return true if next item
         while (results.moveToNext()) {
+            String name = results.getString(nameIndex);
             String date = results.getString(dateIndex);
             String latitude = results.getString(latitudeIndex);
             String longitude = results.getString(longitudeIndex);
             long id = results.getLong(idColIndex);
 
             //add to elements ArrayList
-            elements.add(new EarthyImage(date, latitude, longitude, id));
+            elements.add(new EarthyImage(name, date, latitude, longitude, id));
         }
     }
 
@@ -175,6 +241,10 @@ public class Favorites_List extends AppCompatActivity {
      * Class to represent a saved or "favorited" query and contains relevant data on the query.
      */
     private class EarthyImage {
+        /**
+         * String name given by the user
+         */
+        private String name;
         /**
          * String value for the date the image was taken.
          */
@@ -199,7 +269,8 @@ public class Favorites_List extends AppCompatActivity {
          * @param longitude String value for longitude
          * @param Id long value for database Id
          */
-        public EarthyImage(String date, String latitude, String longitude, long Id) {
+        public EarthyImage(String name, String date, String latitude, String longitude, long Id) {
+            this.name = name;
             this.date = date;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -229,5 +300,7 @@ public class Favorites_List extends AppCompatActivity {
          * @return long id.
          */
         public long getId() { return Id; }
+
+        public String getName() { return name; }
     }
 }

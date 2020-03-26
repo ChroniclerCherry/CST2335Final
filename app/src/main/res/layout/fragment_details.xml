@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailsFragment"
+    android:weightSum="3">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/fd_latitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="latidue: 69"
+        android:layout_marginLeft="3dp"
+        android:textSize="18dp"/>
+
+    <TextView
+        android:id="@+id/fd_longitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="longitude: 69"
+        android:textSize="18dp"/>
+
+    <TextView
+        android:id="@+id/fd_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="date: 24june"
+        android:layout_marginRight="3dp"
+        android:textSize="18dp"/>
+
+
+</LinearLayout>
