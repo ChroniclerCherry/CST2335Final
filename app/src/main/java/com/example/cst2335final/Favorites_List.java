@@ -48,7 +48,7 @@ public class Favorites_List extends AppCompatActivity {
     public static final String LATITUDE = "LATITUDE";
     public static final String LONGITUDE = "LONGITUDE";
     public static final String ID = "ID";
-    public static final String NAME = "NAME";
+    public static final String URL_PATH = "URL_PATH";
 
     /**
      * Method will initialize widget variables from xml and call loadDataFromDatabase() to populate the ListView with information from the saved queries.
@@ -100,6 +100,7 @@ public class Favorites_List extends AppCompatActivity {
             dataToPass.putString(LATITUDE, elements.get(position).getLatitude());
             dataToPass.putString(LONGITUDE, elements.get(position).getLongitude());
             dataToPass.putString(ID, Long.toString(elements.get(position).getId()));
+            dataToPass.putString(URL_PATH, elements.get(position).getUrlPath());
 
             DetailsFragment dFragment = new DetailsFragment(); //Creating the fragment
             dFragment.setArguments(dataToPass); //Passing the bundle of information
@@ -205,7 +206,7 @@ public class Favorites_List extends AppCompatActivity {
         db = dbOpener.getWritableDatabase();
 
         //Array to store column names
-        String[] columns = {Earthy_Image_MyOpener.COL_ID, Earthy_Image_MyOpener.NAME, Earthy_Image_MyOpener.DATE, Earthy_Image_MyOpener.LATITUDE, Earthy_Image_MyOpener.LONGITUDE};
+        String[] columns = {Earthy_Image_MyOpener.COL_ID, Earthy_Image_MyOpener.NAME, Earthy_Image_MyOpener.DATE, Earthy_Image_MyOpener.LATITUDE, Earthy_Image_MyOpener.LONGITUDE, Earthy_Image_MyOpener.URL_PATH};
         //Query for all results
         Cursor results = db.query(false,Earthy_Image_MyOpener.TABLE_NAME,columns,null,null,null,null,null,null);
 
@@ -215,6 +216,7 @@ public class Favorites_List extends AppCompatActivity {
         int latitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LATITUDE);
         int longitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LONGITUDE);
         int idColIndex = results.getColumnIndex(Earthy_Image_MyOpener.COL_ID);
+        int urlPathIndex = results.getColumnIndex(Earthy_Image_MyOpener.URL_PATH);
 
         //Iterate over results, return true if next item
         while (results.moveToNext()) {
@@ -223,9 +225,10 @@ public class Favorites_List extends AppCompatActivity {
             String latitude = results.getString(latitudeIndex);
             String longitude = results.getString(longitudeIndex);
             long id = results.getLong(idColIndex);
+            String urlPath = results.getString(urlPathIndex);
 
             //add to elements ArrayList
-            elements.add(new EarthyImage(name, date, latitude, longitude, id));
+            elements.add(new EarthyImage(name, date, latitude, longitude, id, urlPath));
         }
     }
 
@@ -261,6 +264,10 @@ public class Favorites_List extends AppCompatActivity {
          * Long value for database id.
          */
         private long Id;
+        /**
+         * String value for image url
+         */
+        private String urlPath;
 
         /**
          * Single class constructor
@@ -269,12 +276,13 @@ public class Favorites_List extends AppCompatActivity {
          * @param longitude String value for longitude
          * @param Id long value for database Id
          */
-        public EarthyImage(String name, String date, String latitude, String longitude, long Id) {
+        public EarthyImage(String name, String date, String latitude, String longitude, long Id, String urlPath) {
             this.name = name;
             this.date = date;
             this.latitude = latitude;
             this.longitude = longitude;
             this.Id = Id;
+            this.urlPath = urlPath;
         }
 
         /**
@@ -301,6 +309,16 @@ public class Favorites_List extends AppCompatActivity {
          */
         public long getId() { return Id; }
 
+        /**
+         * Returns name of image
+         * @return String name
+         */
         public String getName() { return name; }
+
+        /**
+         * Returns url path of image
+         * @return String url path
+         */
+        public String getUrlPath() { return urlPath; }
     }
 }

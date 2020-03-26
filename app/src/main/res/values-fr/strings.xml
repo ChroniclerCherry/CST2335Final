@@ -21,11 +21,10 @@
     <string name="add_snackbar">Ajouté aux favoris!</string>
 
     <string name="query_error_toast">Pardon! Aucune image disponible pour ces coordonnées</string>
-
+    <string name="search_btn_toast">Récupération d\'image...</string>
     <string name="menu_title">Base de données d\'images de la Terre de la NASA</string>
     <string name="menu_title_favs">Votre liste de favoris</string>
-    <string name="help_menu_favs">
-Ceci est votre liste de favoris! Cliquez sur un élément pour afficher les détails ou maintenez enfoncé un élément si vous souhaitez le supprimer de la liste.</string>
+    <string name="help_menu_favs">Ceci est votre liste de favoris! Cliquez sur un élément pour afficher les détails ou maintenez enfoncé un élément si vous souhaitez le supprimer de la liste.</string>
     <string name="help_menu_item">Salut! Saisissez simplement les coordonnées de latitude / longitude et l\'application recherchera l\'image. Si vous aimez l\'image, donnez-lui un nom et ajoutez-la à votre liste de favoris! Cliquez sur le bouton "afficher les favoris" pour afficher votre liste de favoris.</string>
     <string name="ok">D\'accord!</string>
 
@@ -33,5 +32,6 @@ Ceci est votre liste de favoris! Cliquez sur un élément pour afficher les dét
     <string name="alert_message">Cliquez oui pour supprimer</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
+    <string name="fragment_hint">Cliquez sur un article pour voir les détails</string>
 
 </resources>

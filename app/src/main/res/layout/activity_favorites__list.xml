@@ -26,14 +26,14 @@
         android:id="@+id/fragmentLocation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:background="#b7d7e8"/>
 
     <ListView
         android:id="@+id/fav_images_listview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8.5">
+        android:layout_weight="7.5">
 
     </ListView>
 

@@ -3,7 +3,7 @@
  * Date: 03/16/2020
  *
  * Activity class for the view activity_nasa_earthy_image_db.xml. This activity will take user input for
- * latitude and longitude and output an image with details using Google's Earthy Image API. The user can
+ * latitude and longitude and output an image with details using Google's Earth Imagery API. The user can
  * then choose to save the image into a favorites list, which will store the query details in the SQLite
  * database and the user can go to the Favorites_List Activity class to view the favorites list.
  *
@@ -15,32 +15,22 @@ package com.example.cst2335final;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Xml;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,8 +40,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,9 +52,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 public class Nasa_Earthy_Image_Db extends AppCompatActivity {
     /**
@@ -110,21 +95,13 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
      */
     TextView dateTextView;
     /**
+     * TextView variable for showing the url path of the image
+     */
+    TextView urlPathTextView;
+    /**
      * SQLiteDatabase variable for accessing our database.
      */
     SQLiteDatabase db;
-    /**
-     * {@value} Constant to represent the database date column name.
-     */
-    private final static String DATE = "date";
-    /**
-     * {@value} Constant to represent the database latitude column name.
-     */
-    private final static String LATITUDE = "latitude";
-    /**
-     * {@value} Constant to represent the database longitude column name.
-     */
-    private final static String LONGITUDE = "longitude";
     /**
      *Progress bar variable for the progress bar in activity_nasa_earthy_image_db.xml.
      */
@@ -158,6 +135,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         latitudeTextView = findViewById(R.id.latitude_textView);
         longitudeTextView = findViewById(R.id.longitude_textView);
         dateTextView = findViewById(R.id.date_textView);
+        urlPathTextView = findViewById(R.id.url_path_textView);
         progressBar = findViewById(R.id.progress_bar);
 
         //Widgets in input section
@@ -203,6 +181,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
             String longitude = longitudeTextView.getText().toString();
             String date = dateTextView.getText().toString();
             String name = favNameEditText.getText().toString();
+            String urlPath = urlPathTextView.getText().toString();
 
             if (!isEmpty(favNameEditText)) {
                     //Get a db connection
@@ -217,11 +196,12 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
                     newRowValues.put(Earthy_Image_MyOpener.LONGITUDE, longitude);
                     newRowValues.put(Earthy_Image_MyOpener.DATE, date);
                     newRowValues.put(Earthy_Image_MyOpener.NAME, name);
+                newRowValues.put(Earthy_Image_MyOpener.URL_PATH, urlPath);
 
                     //insert into db which returns id
                     long newId = db.insert(Earthy_Image_MyOpener.TABLE_NAME, null, newRowValues);
 
-                    Snackbar addToDbSnackbar = Snackbar.make(addToFavoritesBtn, getResources().getString(R.string.add_snackbar), Snackbar.LENGTH_LONG);
+                    Snackbar addToDbSnackbar = Snackbar.make(addToFavoritesBtn, getResources().getString(R.string.add_snackbar), Snackbar.LENGTH_SHORT);
                     addToDbSnackbar.show();
             }
             else favNameEditText.setError(getResources().getString(R.string.is_empty));
@@ -236,7 +216,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
     /**
      * Method to check if an EditText is empty
      * @param etText EditText variable from XML
-     * @return boolean value to represent if EditText is empty
+     * @return boolean value to represent if the EditText is empty
      */
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
@@ -322,6 +302,10 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
          * String to store error message while loading from api.
          */
         private String returnString = null;
+        /**
+         * String value used to name the image when we save to the device
+         */
+        private String id = null;
 
         /**
          * Query using Google's Earthy Image API done in this method, and will set values for date, latitude, longitude, imageUrl, and image.
@@ -360,31 +344,60 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
                 publishProgress(25);
                 imageUrl = earthyImageJson.getString("url");
                 publishProgress(50);
+                id = earthyImageJson.getString("id");
 
-                //getting image from a seperate url
-                image = null;
-                URL url = new URL(imageUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                int responseCode = connection.getResponseCode();
-                if (responseCode == 200) {
-                    image = BitmapFactory.decodeStream(connection.getInputStream());
-                }   publishProgress(75);
-
+                String fileName =  id.replace("/","") + ".png";
+                //If file exists we download from server
+                if(!fileExistance(fileName)) {
+                    image = null;
+                    URL url = new URL(imageUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == 200) {
+                        image = BitmapFactory.decodeStream(connection.getInputStream());
+                    }
+                    //And then save to local storage
+                    FileOutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+                    image.compress(Bitmap.CompressFormat.PNG, 80, outputStream);
+                    outputStream.flush();
+                    outputStream.close();
+                }
+                else { //else we download image from local storage
+                    FileInputStream fis = null;
+                    try {
+                        fis = openFileInput(fileName);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    image = BitmapFactory.decodeStream(fis);
+                }
+                publishProgress(75);
             }
             // find a way to inform user error was made and not let it crash - bad params (lat 2, long 77)
             catch (FileNotFoundException fnfe) {
-                returnString = "FileNotFoundException";
-            }
-            catch (MalformedURLException mfe) {
-                returnString = "MalFormed URL exception";
+                return returnString = "FileNotFoundException";
+            } catch (MalformedURLException mfe) {
+                return returnString = "MalFormed URL exception";
             } catch (IOException ioe) {
-                returnString = "IOException";
-            } catch (JSONException jsone) {
-                returnString = "JSON Exception";
+                return returnString = "IOException";
+            } catch (JSONException jse) {
+                return returnString = "JSON Exception";
+            } catch (Exception e) {
+                return returnString = "Exception e error";
             }
             publishProgress(100);
             return returnString;
+        }
+
+        /**
+         * Method to check if a file exists in local storage
+         * @param fname String path o file
+         * @return boolean value to indicate of file exists
+         */
+        public boolean fileExistance(String fname){
+            File file = getBaseContext().getFileStreamPath(fname);
+            return file.exists();
         }
 
         /**
@@ -395,18 +408,19 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         protected void onPostExecute(String sentFromDoInBackground) {
             super.onPostExecute(sentFromDoInBackground);
 
-            if(returnString != null) {
+            if(sentFromDoInBackground == null) {
                 imageImageView.setImageBitmap(image);
                 dateTextView.setText("Date: " + date.substring(0, 10));
                 latitudeTextView.setText("Latitude: " + latitudeEditText.getText().toString());
                 longitudeTextView.setText("Longitude: " + longitudeEditText.getText().toString());
+                urlPathTextView.setText(imageUrl);
                 progressBar.setVisibility(View.INVISIBLE);
                 favNameEditText.setVisibility(View.VISIBLE);
                 addToFavoritesBtn.setVisibility(View.VISIBLE);
             }
             //A lot of coordinates do not contain images, so we show error toast message to user
             else {
-                Toast errorToast = Toast.makeText(Nasa_Earthy_Image_Db.this, getResources().getString(R.string.error_toast), Toast.LENGTH_SHORT);
+                Toast errorToast = Toast.makeText(Nasa_Earthy_Image_Db.this, getResources().getString(R.string.error_toast) + sentFromDoInBackground, Toast.LENGTH_SHORT);
                 errorToast.show();
                 progressBar.setVisibility(View.INVISIBLE);
             }

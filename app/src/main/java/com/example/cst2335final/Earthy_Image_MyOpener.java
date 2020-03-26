@@ -21,7 +21,7 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
     /**
      * {@value} Constant for version number of database. If database version differs from this value, a new database will be created.
      */
-    protected final static int VERSION_NUM = 2;
+    protected final static int VERSION_NUM = 1;
     /**
      * {@value} Constant for name of the database table.
      */
@@ -46,6 +46,10 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
      * {@value} Constant for the name of the id column
      */
     public final static String COL_ID = "_id";
+    /**
+     * {@value} Constant for the name of the url column
+     */
+    public final static String URL_PATH = "url_path";
 
     /**
      * Class contructor
@@ -63,6 +67,7 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + URL_PATH + " text,"
                 + NAME + " text,"
                 + DATE + " text,"
                 + LATITUDE  + " text,"
