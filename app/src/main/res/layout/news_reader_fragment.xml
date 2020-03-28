@@ -13,38 +13,39 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/textViewDesc"
+        android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewTitle" />
 
     <TextView
-        android:id="@+id/textViewDate"
+        android:id="@+id/textViewDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewDesc" />
+        android:layout_below="@id/textViewDate" />
 
     <TextView
         android:id="@+id/textViewLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewDate" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/textViewLink"
-        />
+        android:layout_below="@id/textViewDesc" />
 
 <!--    TRANSLATE/ADD to strings-->
+
     <Button
         android:id="@+id/buttonFave"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
         android:text="Favourite" />
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Back" />
 
 </RelativeLayout>
