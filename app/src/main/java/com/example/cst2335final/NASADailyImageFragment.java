@@ -19,7 +19,6 @@ public class NASADailyImageFragment extends Fragment {
     private boolean isTablet;
     private AppCompatActivity parentActivity;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

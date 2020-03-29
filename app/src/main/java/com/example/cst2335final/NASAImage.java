@@ -1,6 +1,10 @@
 package com.example.cst2335final;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class NASAImage {
     private String date;
@@ -9,10 +13,11 @@ public class NASAImage {
     Bitmap image;
     private long id;
 
-    public NASAImage(String date, String title, String description, Bitmap image){
+    public NASAImage(long id, String title, String description, String date, Bitmap image){
         this.date = date;
         this.title = title;
         this.description = description;
+        this.id = id;
         this.image = image;
     }
 

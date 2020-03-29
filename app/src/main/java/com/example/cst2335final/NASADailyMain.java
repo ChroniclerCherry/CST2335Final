@@ -27,13 +27,7 @@ public class NASADailyMain extends AppCompatActivity {
 
     EditText apiEntry;
 
-    EditText dateEntry;
-    Button datePickerButton;
-    Button searchButton;
-    final static String URL_START = "https://api.nasa.gov/planetary/apod?api_key=";
-    final static String DEFAULT_API = "DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d";
     String userApi;
-    final static String URL_END = "&date=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +69,8 @@ public class NASADailyMain extends AppCompatActivity {
 
     public void goToFavourites(View view) {
         Intent goToFavourites = new Intent(NASADailyMain.this, NASADailyFavourites.class);
+        userApi = apiEntry.getText().toString();
+        goToFavourites.putExtra("API",userApi);
         startActivity(goToFavourites);
     }
 }
