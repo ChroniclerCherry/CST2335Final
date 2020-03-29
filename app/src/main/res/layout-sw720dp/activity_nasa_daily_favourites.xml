@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--    sets text-->
+    <TextView
+        android:id="@+id/textViewChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/NASADailyImage_title"/>
+
+    <ListView
+        android:id="@+id/NASADaily_listView"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/textViewChat">
+        android:layout_above="@id/inputLinearLayout"
+    </ListView>
+
+    <FrameLayout
+        android:id="@+id/NasaDailyImageDataFragment"
+        android:layout_width="match_parent"
+        android:layout_toEndOf="@id/NASADaily_listView"
+        android:layout_height="match_parent"
+        />
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@id/NasaDailyImageDataFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputLinearLayout">
+
+        <Button
+            android:id="@+id/NasaDailyImageDatePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="showDatePickerDialog"
+            android:text="@string/NASADailyImage_ChooseDateButton"/>
+
+        <EditText
+            android:id="@+id/NasaDailyImageDateEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="date"
+
+            android:hint="@string/NASADailyImage_DateInput"
+            android:importantForAutofill="no" />
+
+        <Button
+            android:id="@+id/NasaDailyImageSearchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:text="@string/NASADailyImage_searchButton" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CST2335Final</string>
     <string name="GoToNASADailyImage">NASA Image of the Day Search</string>
@@ -14,5 +15,5 @@
     <string name="NASADaily_okay">Ok</string>
     <string name="NASADaily_goToSite">Go to api.nasa.gov</string>
     <string name="NASADailyImage_favouriteButton">Favourite</string>
-    <string name="NASADailyImage_unfavouriteButton">Remove favourite</string>
+    <string name="NASADailyImage_unfavouriteButton">Unfavourite</string>
 </resources>
