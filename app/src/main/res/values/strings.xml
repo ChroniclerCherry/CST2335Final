@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CST2335Final</string>
+    <string name="alertSetMsg">aler</string>
 </resources>

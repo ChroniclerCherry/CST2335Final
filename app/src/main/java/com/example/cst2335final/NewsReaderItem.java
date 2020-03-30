@@ -11,9 +11,9 @@ public class NewsReaderItem extends Object {
 
     public NewsReaderItem() { }
 
-    public NewsReaderItem(String title) {
-        this.title = title;
-    }
+    //public NewsReaderItem(String title) {
+        //this.title = title;
+   // }
 
     public NewsReaderItem (String title, String desc, String date, String link) {
         this.title = title;
@@ -21,13 +21,11 @@ public class NewsReaderItem extends Object {
         this.date = date;
         this.link = link;
     }
-
     public void setTitle(String title) { this.title = title; }
 
     public String getTitle() {
         return title;
     }
-
     public void setDesc(String desc) {
         this.desc = desc;
     }
@@ -51,5 +49,4 @@ public class NewsReaderItem extends Object {
     public String getLink() {
         return link;
     }
-
 }
