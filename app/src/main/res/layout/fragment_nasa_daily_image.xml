@@ -8,18 +8,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/NASADaily_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_launcher_background"
+            android:layout_weight="30"
             android:layout_gravity="center_horizontal"
             />
 
         <TextView
             android:id="@+id/NASADaily_title"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Title"
@@ -28,7 +30,23 @@
             />
 
         <TextView
+            android:id="@+id/NASADaily_loadingTextView"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text=""/>
+        <ProgressBar
+            android:id="@+id/NASADaily_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
             android:id="@+id/NASADaily_imageDate"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Date"
@@ -36,18 +54,23 @@
             />
 
         <TextView
-            android:id="@+id/NASADaily_explaination"
+            android:id="@+id/NASADaily_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="30"
             android:text="Description"
             android:textAlignment="center"
+            android:scrollbars = "vertical"
             />
 
-        <Button
+        <CheckBox
+            android:id="@+id/NASADaily_favouriteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_gravity="center_horizontal"
-            android:text="@string/NASADailyImage_favouriteButton"/>
+            android:text="@string/NASADailyImage_favouriteButton"
+            style="?android:attr/starStyle"/>
 
     </LinearLayout>
 

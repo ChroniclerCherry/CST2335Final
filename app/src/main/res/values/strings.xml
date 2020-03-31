@@ -14,5 +14,6 @@
     <string name="NASADaily_okay">Ok</string>
     <string name="NASADaily_goToSite">Go to api.nasa.gov</string>
     <string name="NASADailyImage_favouriteButton">Favourite</string>
-    <string name="NASADailyImage_unfavouriteButton">Remove favourite</string>
+    <string name="NASADaily_loadingText">Loading data from: </string>
+    <string name="NASADaily_noImage">No image found on this date</string>
 </resources>
