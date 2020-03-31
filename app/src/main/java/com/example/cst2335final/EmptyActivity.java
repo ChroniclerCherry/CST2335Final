@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+/**
+ * The activity launched when on a phone and the user chooses to view an image's details
+ *
+ */
 public class EmptyActivity extends AppCompatActivity {
 
     @Override
@@ -12,8 +16,8 @@ public class EmptyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_empty);
 
-        Intent fromChat = getIntent();
-        Bundle dataToPass = fromChat.getBundleExtra("data");
+        Intent fromFavouritesList = getIntent();
+        Bundle dataToPass = fromFavouritesList.getBundleExtra("data");
 
         NASADailyImageFragment dFragment = new NASADailyImageFragment(); //add a DetailFragment
         dFragment.setTablet(false);

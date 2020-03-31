@@ -16,4 +16,7 @@
     <string name="NASADailyImage_favouriteButton">Favourite</string>
     <string name="NASADaily_loadingText">Loading data from: </string>
     <string name="NASADaily_noImage">No image found on this date</string>
+    <string name="NASADaily_invalidUrlError">No data found. Please ensure you have entered a valid date and API key</string>
+    <string name="NASADaily_confirmDelete">Would you like to delete</string>
+    <string name="NASADaily_Confirm">Confirm</string>
 </resources>

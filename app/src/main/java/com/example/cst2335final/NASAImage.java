@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class NASAImage {
+public class NASAImage implements Comparable<NASAImage>{
     private String date;
     private String title;
     private String description;
@@ -39,5 +39,10 @@ public class NASAImage {
 
     public long getId() {
         return id;
+    }
+
+    @Override
+    public int compareTo(NASAImage img) {
+        return date.compareTo(img.getDate());
     }
 }

@@ -1,20 +1,18 @@
 package com.example.cst2335final;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,24 +24,21 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 public class NASADailyFavourites extends AppCompatActivity {
+
+    public static int REQUEST_CODE = 444;
+    public static int DATABASE_CHANGED = 555;
+    public static int INVALID_URL_ERROR = 666;
 
     private MyListAdapter adapter;
     private FrameLayout chatFragment;
@@ -89,7 +84,7 @@ public class NASADailyFavourites extends AppCompatActivity {
                 api = DEFAULT_API;
 
             gotoLoading.putExtra("URL",URL_START+api+URL_END+dateEntry.getText().toString());
-            startActivityForResult(gotoLoading,0);
+            startActivityForResult(gotoLoading, REQUEST_CODE);
         });
     }
 
@@ -97,44 +92,50 @@ public class NASADailyFavourites extends AppCompatActivity {
         ListView messagesListView = findViewById(R.id.NASADaily_listView);
         messagesListView.setAdapter(adapter = new MyListAdapter());
 
-        chatFragment = findViewById(R.id.NasaDailyImageDataFragment);
-        isTablet = chatFragment != null;
-
+        //if an item is clicked, show a snackbar to make option to remove that item
         messagesListView.setOnItemClickListener((list, item, position, id) -> {
-            //Create a bundle to pass data to the new fragment
-            Bundle dataToPass = new Bundle();
-            dataToPass.putInt(IMAGE_POSITION, position);
-            dataToPass.putLong(IMAGE_ID, id);
-            dataToPass.putString(IMAGE_DATE, imagesList.get(position).getDate());
-            dataToPass.putString(IMAGE_TITLE, imagesList.get(position).getTitle());
-            dataToPass.putString(IMAGE_DESCRIPTION, imagesList.get(position).getDescription());
-            dataToPass.putParcelable(IMAGE_BITMAP,imagesList.get(position).getImage());
-
-            if(isTablet)
-            {
-                dFragment = new NASADailyImageFragment(); //add a DetailFragment
-                dFragment.setTablet(isTablet);
-                dFragment.setArguments( dataToPass ); //pass it a bundle for information
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.NasaDailyImageDataFragment, dFragment) //Add the fragment in FrameLayout
-                        .commit(); //actually load the fragment.
-            }
-            else //isPhone
-            {
-                Intent nextActivity = new Intent(NASADailyFavourites.this, EmptyActivity.class);
-                nextActivity.putExtra("data",dataToPass); //send data to next activity
-                startActivity(nextActivity); //make the transition
-            }
+            Snackbar snackbar = Snackbar
+                    .make(item, getText(R.string.NASADaily_confirmDelete)
+                            + imagesList.get(position).getTitle(), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.NASADaily_Confirm,v->{
+                                db.delete(NASADailyOpener.TABLE_NAME, NASADailyOpener.COL_ID + "= ?",
+                                        new String[] {Long.toString(id)});
+                                imagesList.remove(position);
+                                adapter.notifyDataSetChanged();
+                    }
+                    );
+            snackbar.show();
         });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == DATABASE_CHANGED) {
+            //reload everything from database and update listview
+            imagesList.clear();
+            loadDataFromDatabase();
+            adapter.notifyDataSetChanged();
+        }
+
+        if (requestCode == REQUEST_CODE && resultCode == INVALID_URL_ERROR) {
+            Toast.makeText(getApplicationContext(), R.string.NASADaily_invalidUrlError, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        db.close();
     }
 
     private void loadDataFromDatabase()
     {
+
         //get a database connection:
         NASADailyOpener dbOpener = new NASADailyOpener(this);
         db = dbOpener.getWritableDatabase();
-
 
         // We want to get all of the columns. Look at NASADailyOpener.java for the definitions:
         String [] columns = {NASADailyOpener.COL_ID, NASADailyOpener.COL_TITLE, NASADailyOpener.COL_DESCRIPTION, NASADailyOpener.COL_DATE};
@@ -157,27 +158,55 @@ public class NASADailyFavourites extends AppCompatActivity {
             String des = results.getString(descColIndex);
             String date = results.getString(dateColIndex);
             long id = results.getLong(idColIndex);
-
+            Bitmap img;
                 FileInputStream fis = null;
                 try {
-                    fis = openFileInput(date + ".png");
+                    fis = openFileInput("NASADaily" + date + ".png");
+                    img = BitmapFactory.decodeStream(fis);
                 } catch (FileNotFoundException e){
-                    e.printStackTrace();
+                    //image might be null as some dates don't provide an image
+                    img = null;
                 }
-
-                Bitmap img = BitmapFactory.decodeStream(fis);
 
             //add the new Contact to the array list:
             imagesList.add(new NASAImage(id,title,des,date,img));
         }
-
-        //At this point, the messagesList array has loaded every row from the cursor.
+        Collections.sort(imagesList);
     }
 
     public void loadImageFromNasa(View view) {
         Intent goToLoad = new Intent(NASADailyFavourites.this, NASADailyLoading.class);
         goToLoad.putExtra("Date",dateEntry.getText().toString());
         startActivity(goToLoad);
+    }
+
+    public void removeImage(NASAImage img) {
+        db.delete(NASADailyOpener.TABLE_NAME, NASADailyOpener.COL_DATE + "= ?",
+                new String[] {img.getDate()});
+
+        imagesList.remove(searchListByDate(img.getDate()));
+        adapter.notifyDataSetChanged();
+    }
+
+    private int searchListByDate(String d){
+        return internalBinarySearch(0,imagesList.size()-1,d);
+    }
+
+    private int internalBinarySearch(int lo, int hi, String target){
+        //if upper abd lower bound intercepts, the item was not found
+        if (lo > hi)
+            return -1;
+
+        int mid = (lo+hi)/2;
+        int res = target.compareTo(imagesList.get(mid).getDate());
+
+        if (res == 0)
+            return mid;
+        if (res > 0)
+            return internalBinarySearch(mid+1,hi,target);
+        else
+            return internalBinarySearch(lo,mid-1,target);
+
     }
 
     class MyListAdapter extends BaseAdapter {
@@ -204,13 +233,13 @@ public class NASADailyFavourites extends AppCompatActivity {
             NASAImage img = getItem(position);
             imageView = inflater.inflate(R.layout.nasa_daily_list,parent,false);
 
-            TextView title = findViewById(R.id.NASADaily_title);
+            TextView title = imageView.findViewById(R.id.NASADaily_title);
             title.setText(img.getTitle());
 
-            TextView dateView = findViewById(R.id.NASADaily_imageDate);
+            TextView dateView = imageView.findViewById(R.id.NASADaily_imageDate);
             dateView.setText(img.getDate());
 
-            ImageView imgView = findViewById(R.id.NASADaily_image);
+            ImageView imgView = imageView.findViewById(R.id.NASADaily_image);
             imgView.setImageBitmap(img.getImage());
 
             return imageView;

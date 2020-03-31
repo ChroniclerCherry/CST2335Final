@@ -2,8 +2,10 @@ package com.example.cst2335final;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -51,6 +53,8 @@ public class NASADailyLoading extends AppCompatActivity {
     private String imgUrl;
     private Bitmap image;
 
+    SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +63,11 @@ public class NASADailyLoading extends AppCompatActivity {
         //get the url to scrape
         Intent fromFavourites = getIntent();
         fullUrl = fromFavourites.getStringExtra("URL");
-        
+
+        //open the database
+        NASADailyOpener dbOpener = new NASADailyOpener(this);
+        db = dbOpener.getWritableDatabase();
+
         Log.e("Url:", fullUrl);
 
         //get references to all the GUI elements
@@ -87,7 +95,36 @@ public class NASADailyLoading extends AppCompatActivity {
         //start scraping
         NASADailyQuery request = new NASADailyQuery();
         request.execute();
-        
+
+        favouriteCheck.setOnCheckedChangeListener((bv,isChecked) -> {
+            if (isChecked){
+                addNewImage();
+                setResult(NASADailyFavourites.DATABASE_CHANGED);
+            } else {
+                removeImage();
+                setResult(NASADailyFavourites.DATABASE_CHANGED);
+            }
+        });
+    }
+
+    private void removeImage() {
+        db.delete(NASADailyOpener.TABLE_NAME, NASADailyOpener.COL_DATE + "= ?",
+                new String[] {date});
+    }
+
+    private void addNewImage() {
+        ContentValues newRowValues = new ContentValues();
+        newRowValues.put(NASADailyOpener.COL_DATE, date);
+        newRowValues.put(NASADailyOpener.COL_DESCRIPTION, description);
+        newRowValues.put(NASADailyOpener.COL_TITLE, title);
+
+        long newId = db.insert(NASADailyOpener.TABLE_NAME, null, newRowValues);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        db.close();
     }
 
     class NASADailyQuery extends AsyncTask< String, Integer, String> {
@@ -97,7 +134,6 @@ public class NASADailyLoading extends AppCompatActivity {
         @Override
         public String doInBackground(String ... args)
         {
-
             try {
 
                 //create a URL object of what server to contact:
@@ -163,6 +199,12 @@ public class NASADailyLoading extends AppCompatActivity {
             }
             catch (Exception e)
             {
+                if (e.getClass().equals(FileNotFoundException.class)){
+                    setResult(NASADailyFavourites.INVALID_URL_ERROR);
+                    cancel(true);
+                    finish();
+                }
+
                 Log.e("Error", e.getMessage());
             }
             return "Done";
@@ -170,12 +212,13 @@ public class NASADailyLoading extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String args){
+
             //hide loading stuff and make them take no space
             if (mediaType.equals("image")){
                 loadingText.setVisibility(View.GONE);
             } else {
-                loadingText.setHighlightColor(Color.BLUE);
-                loadingText.setText(R.string.NASADaily_noImage);
+                loadingText.setTextColor(Color.BLUE);
+                loadingText.setText(getText(R.string.NASADaily_noImage));
             }
 
             progress.setVisibility(View.GONE);
