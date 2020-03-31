@@ -8,6 +8,7 @@ public class NewsReaderItem extends Object {
     private String date;
     private String link;
     private String desc;
+    private String note;
 
     public NewsReaderItem() { }
 
@@ -15,11 +16,12 @@ public class NewsReaderItem extends Object {
         //this.title = title;
    // }
 
-    public NewsReaderItem (String title, String desc, String date, String link) {
+    public NewsReaderItem (String title, String desc, String date, String link, String note) {
         this.title = title;
         this.desc = desc;
         this.date = date;
         this.link = link;
+        this.note = note;
     }
     public void setTitle(String title) { this.title = title; }
 
@@ -48,5 +50,13 @@ public class NewsReaderItem extends Object {
 
     public String getLink() {
         return link;
+    }
+
+    public void setNote(String link) {
+        this.note = note;
+    }
+
+    public String getNote() {
+        return note;
     }
 }

@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -23,6 +25,8 @@ public class NewsReaderFragment extends Fragment {
     private String desc;
     private String date;
     private String link;
+    private String note;
+    private ContentValues newRow = new ContentValues();
 
     private AppCompatActivity parentActivity;
 
@@ -37,7 +41,6 @@ public class NewsReaderFragment extends Fragment {
         desc = dataFromActivity.getString("Desc");
         date = dataFromActivity.getString("Date");
         link = dataFromActivity.getString("Link");
-
 
         // Inflate the layout for this fragment
         View result = inflater.inflate(R.layout.news_reader_fragment, container, false);
@@ -65,6 +68,9 @@ public class NewsReaderFragment extends Fragment {
         String link = dataFromActivity.getString(NewsReaderSearch.LINK);
         linkView.setText(link);
 
+        EditText noteBox = result.findViewById(R.id.noteText);
+        noteBox.setText(note);
+
         // get the fave button, and add a click listener:
         Button faveBtn = result.findViewById(R.id.buttonFave);
         faveBtn.setOnClickListener(clk -> {
@@ -72,18 +78,23 @@ public class NewsReaderFragment extends Fragment {
             NewsReaderOpener dbOpener = new NewsReaderOpener(this.parentActivity);
             db = dbOpener.getWritableDatabase();
             //create newsItem
-            NewsReaderItem fave = new NewsReaderItem(title, date, desc, link);
-            ContentValues newRow = new ContentValues();
+            NewsReaderItem fave = new NewsReaderItem(title, date, desc, link, note);
+            newRow = new ContentValues();
             //add to db
             newRow.put(NewsReaderOpener.TITLE, title);
             newRow.put(NewsReaderOpener.DESC, desc);
             newRow.put(NewsReaderOpener.DATE, date);
             newRow.put(NewsReaderOpener.LINK, link);
+            if (noteBox != null) {
+                newRow.put(NewsReaderOpener.NOTE, String.valueOf(noteBox.getText()));
+            }
+            else {
+                newRow.put(NewsReaderOpener.NOTE, "");
+            }
+
             long newId = db.insert(NewsReaderOpener.TABLE_NAME, null, newRow);
-
-            //Show the id of the inserted item:
-            Toast.makeText(this.parentActivity, "You added an item to favourites " + newId, Toast.LENGTH_LONG).show();
-
+            //Show the item was inserted
+            Snackbar.make(faveBtn, "You added an item to favourites ", Snackbar.LENGTH_SHORT).show();
         });
 
         // get the back button, and add a click listener to finish and go back to the list of titles
@@ -92,7 +103,6 @@ public class NewsReaderFragment extends Fragment {
             //Tell the parent activity to remove
             parentActivity.finish();
             parentActivity.getSupportFragmentManager().beginTransaction().remove(this).commit();
-
         });
 
         return result;

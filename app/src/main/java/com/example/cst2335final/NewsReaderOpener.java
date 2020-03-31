@@ -13,6 +13,7 @@ public class NewsReaderOpener extends SQLiteOpenHelper {
     public final static String DESC = "DESC";
     public final static String DATE = "DATE";
     public final static String LINK = "LINK";
+    public final static String NOTE = "NOTE";
     public final static String COL_ID = "_id";
 
     public NewsReaderOpener(Context ctx)
@@ -29,7 +30,8 @@ public class NewsReaderOpener extends SQLiteOpenHelper {
                 + TITLE + " text,"
                 + DESC + " text,"
                 + DATE  + " text,"
-                + LINK + " text);");
+                + LINK + " text,"
+                + NOTE + " text);");
     }
 
     /**

@@ -69,7 +69,7 @@ public class NewsReaderFaves extends AppCompatActivity {
         //get a database connection:
         NewsReaderOpener dbOpener = new NewsReaderOpener(this);
         db = dbOpener.getWritableDatabase();// We want to get all of the columns.
-        String [] columns = {NewsReaderOpener.COL_ID, NewsReaderOpener.TITLE, NewsReaderOpener.DESC, NewsReaderOpener.DATE, NewsReaderOpener.LINK};
+        String [] columns = {NewsReaderOpener.COL_ID, NewsReaderOpener.TITLE, NewsReaderOpener.DESC, NewsReaderOpener.DATE, NewsReaderOpener.LINK, NewsReaderOpener.NOTE};
 
         //query all the results from the database:
         results = db.query(false, NewsReaderOpener.TABLE_NAME, columns, null, null, null, null, null, null);
@@ -80,6 +80,7 @@ public class NewsReaderFaves extends AppCompatActivity {
         int descColIndex = results.getColumnIndex(NewsReaderOpener.DESC);
         int dateColIndex = results.getColumnIndex(NewsReaderOpener.DATE);
         int linkColIndex = results.getColumnIndex(NewsReaderOpener.LINK);
+        int noteColIndex = results.getColumnIndex(NewsReaderOpener.NOTE);
         int idColIndex = results.getColumnIndex(NewsReaderOpener.COL_ID);
 
         //iterate over the results, return true if there is a next item:
@@ -91,6 +92,7 @@ public class NewsReaderFaves extends AppCompatActivity {
             String desc = results.getString(descColIndex);
             String date = results.getString(dateColIndex);
             String link = results.getString(linkColIndex);
+            String note = results.getString(noteColIndex);
             long id = results.getLong(idColIndex);
 
             fave.setTitle(title);
@@ -98,6 +100,7 @@ public class NewsReaderFaves extends AppCompatActivity {
             fave.setDesc(desc);
             fave.setLink(link);
             fave.setID(id);
+            fave.setNote(note);
             //add the new item to the array list:
             faveList.add(fave);
         }
@@ -108,15 +111,17 @@ public class NewsReaderFaves extends AppCompatActivity {
         private String date;
         private String link;
         private String desc;
+        private String note;
         private long id;
 
         public Favourite() {}
 
-        public Favourite(String title, String desc, String date, String link, long id) {
+        public Favourite(String title, String desc, String date, String link, String note, long id) {
             this.title = title;
             this.desc = desc;
             this.date = date;
             this.link = link;
+            this.note = note;
             this.id = id;
         }
             public void setTitle(String title) { this.title = title; }
@@ -142,6 +147,12 @@ public class NewsReaderFaves extends AppCompatActivity {
             public String getLink() {
                 return link;
             }
+            public void setNote(String note) {
+            this.note = note;
+        }
+            public String getNote() {
+            return note;
+        }
             public void setID(long id) {
             this.id = id;
             }
@@ -178,7 +189,7 @@ public class NewsReaderFaves extends AppCompatActivity {
             //inflate the view to show the list of news item titles
             faveView = faveInflater.inflate(R.layout.news_reader_faves, parent, false);
             TextView faveListView = faveView.findViewById(R.id.faveListRow);
-            faveListView.setText(fave.getTitle());
+            faveListView.setText(" Date:  " + fave.getDate() + " Title:  " + fave.getTitle()+ " " + fave.getDesc()+ " Link:  " + fave.getLink() + " Note: " + fave.getNote());
 
             return faveListView;
         }
@@ -188,20 +199,4 @@ public class NewsReaderFaves extends AppCompatActivity {
     {
         db.delete(NewsReaderOpener.TABLE_NAME, NewsReaderOpener.COL_ID + "= ?", new String[] {Long.toString(f.getID())});
     }
-
-//    public void printCursor( Cursor c,  int version) {
-//        Log.e("DB Version: ",  "db_version: " + version);
-//        Log.e("Number of Columns: ", "num_of_cols: " + c.getColumnCount());;
-//        c.moveToFirst();
-//        for(int i = 0; i < c.getColumnCount(); i++) {
-//            Log.e("Name of Columns", "column_names: " + c.getColumnName(i));
-//            c.moveToNext();
-//        }
-//        Log.e("Number of Results","number_of_results: " + c.getCount());
-//        c.moveToFirst();
-//        while(!c.isAfterLast()){
-//            Log.e("Results", "message: " + c.getString(c.getColumnIndex(NewsReaderOpener.TITLE)));
-//            c.moveToNext();
-//        }
-//    }
 }
