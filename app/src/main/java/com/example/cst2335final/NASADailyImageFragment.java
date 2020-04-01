@@ -96,7 +96,7 @@ public class NASADailyImageFragment extends Fragment {
                 NASADailyEmptyActivity parent = (NASADailyEmptyActivity) getActivity();
                 Intent closeFragment = new Intent();
                 closeFragment.putExtra(NASADailyFavourites.IMAGE_DATE, date);
-                parent.setResult(NASADailyFavourites.REMOVE_IMAGE, closeFragment);
+                parent.setResult(Activity.RESULT_OK, closeFragment);
                 parent.finish(); //go back
             }
         });

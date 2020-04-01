@@ -124,6 +124,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
             case R.id.home:
                 Intent goHome = new Intent(NewsReaderSearch.this, MainActivity.class);
                 startActivity(goHome);
+                break;
             case R.id.bbc:
                 Intent gotoBbc = new Intent(NewsReaderSearch.this, NewsReaderSearch.class);
                 startActivity(gotoBbc);

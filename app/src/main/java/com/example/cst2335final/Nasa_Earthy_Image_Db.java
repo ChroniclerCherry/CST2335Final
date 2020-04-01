@@ -261,6 +261,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
             case R.id.home:
                 Intent goHome = new Intent(Nasa_Earthy_Image_Db.this, MainActivity.class);
                 startActivity(goHome);
+                break;
             case R.id.bbc:
                 Intent gotoBbc = new Intent(Nasa_Earthy_Image_Db.this, NewsReaderSearch.class);
                 startActivity(gotoBbc);

@@ -184,6 +184,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
             case R.id.home:
                 Intent goHome = new Intent(NASADailyFavourites.this, MainActivity.class);
                 startActivity(goHome);
+                break;
             case R.id.bbc:
                 Intent gotoBbc = new Intent(NASADailyFavourites.this, NewsReaderSearch.class);
                 startActivity(gotoBbc);
@@ -269,6 +270,11 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
                                         new String[] {Long.toString(id)});
                                 imagesList.remove(position);
                                 adapter.notifyDataSetChanged();
+
+                                //if it's a tablet, close the fragment
+                                if(isTablet && getSupportFragmentManager().findFragmentById(R.id.NasaDailyImageDataFragment) != null) {
+                                    getSupportFragmentManager().beginTransaction().remove(dFragment).commit();
+                                }
                     }
                     );
             snackbar.show();
@@ -379,11 +385,6 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
         Collections.sort(imagesList);
     }
 
-    public void loadImageFromNasa(View view) {
-        Intent goToLoad = new Intent(NASADailyFavourites.this, NASADailyLoading.class);
-        goToLoad.putExtra("Date",dateEntry.getText().toString());
-        startActivity(goToLoad);
-    }
 
     public void removeImage(NASAImage img) {
         db.delete(NASADailyOpener.TABLE_NAME, NASADailyOpener.COL_DATE + "= ?",
