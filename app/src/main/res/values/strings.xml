@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">CST2335Final</string>
-    <string name="alertSetMsg">aler</string>
+    <string name="app_name" translatable="false">CST2335Final</string>
+    <string name="alertSetMsg" translatable="false">aler</string>
+    <string name="NRVbackbtn">Back</string>
+    <string name="NRVfavbtn">Favourites</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>

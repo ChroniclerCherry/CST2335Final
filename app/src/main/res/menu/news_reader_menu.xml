@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="Home"
+        android:id="@+id/home"
+        android:icon="@drawable/home"
+        android:orderInCategory="100"
+        app:showAsAction="always"/>  <!-- This uses showAsAction=always, so look at icon= parameter -->
+
+    <item
+        android:title="BBC"
+        android:id="@+id/bbc"
+        android:icon="@drawable/bbc"
+        app:showAsAction="always"
+        android:orderInCategory="400"/>
+
+    <item
+        android:title="Help"
+        android:id="@+id/help"
+        android:icon="@drawable/help"
+        app:showAsAction="never"
+        android:orderInCategory="400"/> <!-- This uses showAsAction=never, so look at title= parameter -->
+
+</menu>

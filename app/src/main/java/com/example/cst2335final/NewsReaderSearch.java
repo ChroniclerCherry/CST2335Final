@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,7 +14,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -22,17 +31,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class NewsReaderSearch extends AppCompatActivity {
+public class NewsReaderSearch extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ArrayList<NewsReaderItem> newsTitles = new ArrayList<>();
     private NewsListAdapter newsListAdapter;
     private Button faveListBtn;
+    private Button backBtn;
 
     public static final String TITLE = "TITLE";
     public static final String DESC = "DESC";
     public static final String DATE = "DATE";
     public static final String LINK = "LINK";
-    //public static final String DB = "DB";
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.news_reader_menu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +75,39 @@ public class NewsReaderSearch extends AppCompatActivity {
            dataToPass.putString(DESC, newsTitles.get(position).getDesc());
            dataToPass.putString(DATE, newsTitles.get(position).getDate());
            dataToPass.putString(LINK, newsTitles.get(position).getLink());
-
            Intent nextActivity = new Intent(NewsReaderSearch.this, EmptyActivity.class);
            nextActivity.putExtras(dataToPass); //send data to next activity
            startActivity(nextActivity); //make the transition
-
         });
+
+        backBtn = findViewById(R.id.backToMain);
+        backBtn.setOnClickListener(click -> finish());
 
         faveListBtn = findViewById(R.id.goToFaveList);
         faveListBtn.setOnClickListener(click -> {
            Intent goToFaves = new Intent(NewsReaderSearch.this, NewsReaderFaves.class);
             startActivity(goToFaves);
         });
+
+        //toolbar
+        Toolbar tbar = findViewById(R.id.toolbar);
+        setSupportActionBar(tbar);
+
+        //NavigationDrawer
+        DrawerLayout drawer = findViewById(R.id.drawer);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
+                drawer, tbar, R.string.open, R.string.close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 
     //Adapter to inflate view
