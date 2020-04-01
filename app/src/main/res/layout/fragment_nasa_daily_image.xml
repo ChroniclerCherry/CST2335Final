@@ -48,14 +48,29 @@
             android:scrollbars = "vertical"
             />
 
-        <CheckBox
-            android:id="@+id/NASADaily_favouriteButton"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/NASADaily_closeImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NASADaily_closeButton"
+                />
+
+            <Button
+            android:id="@+id/NASADaily_unfavouriteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/NASADailyImage_favouriteButton"
-            style="?android:attr/starStyle"/>
+            android:layout_gravity="center"
+            android:text="@string/NASADailyImage_unfavouriteButton" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

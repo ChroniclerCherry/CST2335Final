@@ -2,18 +2,42 @@
 <RelativeLayout android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--    sets text-->
-    <TextView
-        android:id="@+id/textViewChat"
+    <LinearLayout
+        android:id="@+id/NASADaily_apiLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_toStartOf="@id/NasaDailyImageDataFragment">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/NASADailyImage_ApiInformation"/>
+
+        <ImageButton
+            android:id="@+id/NASADaily_ApiHelpButton"
+            android:textSize= "12sp"
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:onClick="displayApiHelp"
+            android:background="@drawable/help"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/NASADaily_ApiEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/NASADailyImage_title"/>
+        android:layout_below="@+id/NASADaily_apiLayout"
+        android:hint="@string/NASADailyImage_ApiKeyEditText"
+        android:layout_toStartOf="@id/NasaDailyImageDataFragment"/>
 
     <ListView
+        android:layout_marginTop="10dp"
         android:id="@+id/NASADaily_listView"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_below="@id/textViewChat">
+        android:layout_below="@id/NASADaily_ApiEditText">
         android:layout_above="@id/inputLinearLayout"
     </ListView>
 

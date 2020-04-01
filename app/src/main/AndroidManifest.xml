@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".NASADailyLoading"></activity>
-        <activity android:name=".NASADailyMain" />
+        <activity android:name=".NASADailyEmptyActivity"></activity>
         <activity android:name=".NASADailyFavourites" />
         <activity android:name=".MainActivity">
             <intent-filter>

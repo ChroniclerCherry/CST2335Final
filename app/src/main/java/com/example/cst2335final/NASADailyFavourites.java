@@ -2,16 +2,20 @@ package com.example.cst2335final;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,66 +38,112 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
+/**
+ * Displays a list of favourited NASA images and contains navigation to search and add new ones
+ * or view the details of favourites images
+ */
 public class NASADailyFavourites extends AppCompatActivity {
 
     public static int REQUEST_CODE = 444;
     public static int DATABASE_CHANGED = 555;
     public static int INVALID_URL_ERROR = 666;
+    public static final int REMOVE_IMAGE = 777;
 
-    private MyListAdapter adapter;
+    private NasaDailyFavouritesAdapter adapter;
     private FrameLayout chatFragment;
+    private NASADailyImageFragment dFragment;
+
     private boolean isTablet;
     private ArrayList<NASAImage> imagesList = new ArrayList<NASAImage>();
     SQLiteDatabase db;
-    private NASADailyImageFragment dFragment;
+
 
     EditText dateEntry;
     Button searchButton;
 
-    public static final String IMAGE_POSITION = "POSITION";
-    public static final String IMAGE_ID = "ID";
     public static final String IMAGE_DATE = "DATE";
     public static final String IMAGE_DESCRIPTION = "DESCRIPTION";
     public static final String IMAGE_TITLE = "TITLE";
-    public static final String IMAGE_BITMAP = "BITMAP";
 
     final static String URL_START = "https://api.nasa.gov/planetary/apod?api_key=";
     final static String DEFAULT_API = "DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d";
     //my API: HafOzdnVZh0xY9W9V4aec8HTJ1byVeKphccKqgRg
-    private String userApi;
+    private String api;
     final static String URL_END = "&date=";
 
+    SharedPreferences prefs;
+    SharedPreferences.Editor edit;
+
+    EditText apiEntry;
+
+    /**
+     * Sets up the activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nasa_daily_favourites);
 
-        Intent fromMain = getIntent();
-        userApi = fromMain.getStringExtra("API");
+        apiEntry = findViewById(R.id.NASADaily_ApiEditText);
+        prefs = getSharedPreferences("NASADailyApi", Context.MODE_PRIVATE);
+        api = prefs.getString("API", "");
 
-        loadDataFromDatabase();
-        setupListView();
+        if (api != null || !api.isEmpty())
+            apiEntry.setText(api);
+
+        loadDataFromDatabase(); //fill the list with existing images from the database
+        setupListView(); //setup the ListView
 
         dateEntry = findViewById(R.id.NasaDailyImageDateEditText);
-
         searchButton = findViewById(R.id.NasaDailyImageSearchButton);
         searchButton.setOnClickListener(click -> {
-            Intent gotoLoading = new Intent(NASADailyFavourites.this, NASADailyLoading.class);
-            String api = userApi;
-            if (userApi == null || userApi.isEmpty())
+            api = apiEntry.getText().toString();
+            if (api == null || api.isEmpty())
                 api = DEFAULT_API;
 
+            //create the url and pass it onto NASADailyLoading to attempt to load image data from the web
+            Intent gotoLoading = new Intent(NASADailyFavourites.this, NASADailyLoading.class);
             gotoLoading.putExtra("URL",URL_START+api+URL_END+dateEntry.getText().toString());
             startActivityForResult(gotoLoading, REQUEST_CODE);
         });
+
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        edit = prefs.edit();
+        edit.putString("API",apiEntry.getText().toString());
+        edit.commit();
+    }
+
+    public void displayApiHelp(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.NasaDaily_apiInformation)
+                .setPositiveButton(R.string.NASADaily_okay, (dialog, which) -> {
+                })
+                .setNegativeButton(R.string.NASADaily_goToSite, (dialog, which) -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.nasa.gov/"));
+                    startActivity(browserIntent);
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    /**
+     * sets up the list view
+     */
     private void setupListView(){
         ListView messagesListView = findViewById(R.id.NASADaily_listView);
-        messagesListView.setAdapter(adapter = new MyListAdapter());
+        messagesListView.setAdapter(adapter = new NasaDailyFavouritesAdapter());
+
+        chatFragment = findViewById(R.id.NasaDailyImageDataFragment);
+        isTablet = chatFragment != null;
 
         //if an item is clicked, show a snackbar to make option to remove that item
-        messagesListView.setOnItemClickListener((list, item, position, id) -> {
+        messagesListView.setOnItemLongClickListener((list, item, position, id) -> {
             Snackbar snackbar = Snackbar
                     .make(item, getText(R.string.NASADaily_confirmDelete)
                             + imagesList.get(position).getTitle(), Snackbar.LENGTH_LONG)
@@ -105,10 +155,45 @@ public class NASADailyFavourites extends AppCompatActivity {
                     }
                     );
             snackbar.show();
+            return false;
+        });
+
+        messagesListView.setOnItemClickListener((list, item, position, id) -> {
+            Bundle dataToPass = new Bundle();
+            NASAImage imgObj = imagesList.get(position);
+            dataToPass.putString(IMAGE_TITLE,imgObj.getTitle());
+            dataToPass.putString(IMAGE_DESCRIPTION,imgObj.getDescription());
+            dataToPass.putString(IMAGE_DATE,imgObj.getDate());
+
+            if(isTablet)
+            {
+                dFragment = new NASADailyImageFragment();
+                dFragment.setTablet(isTablet);
+                dFragment.setArguments( dataToPass ); //pass it a bundle for information
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.NasaDailyImageDataFragment, dFragment) //Add the fragment in FrameLayout
+                        .commit(); //actually load the fragment.
+            }
+            else //isPhone
+            {
+                Intent nextActivity = new Intent(NASADailyFavourites.this, NASADailyEmptyActivity.class);
+                nextActivity.putExtra("data",dataToPass); //send data to next activity
+                startActivityForResult(nextActivity,REQUEST_CODE); //make the transition
+            }
+
         });
 
     }
-
+    /**
+     * When the loading or details page finishes, we will know if they changed the database.
+     * If so, we refresh the entire listview
+     *
+     * If an error occurred, an error message is displayed with a toast
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -122,14 +207,17 @@ public class NASADailyFavourites extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == INVALID_URL_ERROR) {
             Toast.makeText(getApplicationContext(), R.string.NASADaily_invalidUrlError, Toast.LENGTH_LONG).show();
         }
+
+        if (requestCode == REQUEST_CODE && resultCode == REMOVE_IMAGE) {
+            String d = data.getStringExtra(IMAGE_DATE);
+            NASAImage img = new NASAImage(d);
+            removeImage(img);
+        }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        db.close();
-    }
-
+    /**
+     * loads data from the database to populate the imagesList
+     */
     private void loadDataFromDatabase()
     {
 
@@ -184,61 +272,66 @@ public class NASADailyFavourites extends AppCompatActivity {
         db.delete(NASADailyOpener.TABLE_NAME, NASADailyOpener.COL_DATE + "= ?",
                 new String[] {img.getDate()});
 
-        imagesList.remove(searchListByDate(img.getDate()));
+        imagesList.remove(Collections.binarySearch(imagesList,img));
         adapter.notifyDataSetChanged();
     }
 
-    private int searchListByDate(String d){
-        return internalBinarySearch(0,imagesList.size()-1,d);
-    }
+    /**
+     * A base adapter for imagesList to be used by the listView
+     */
+    class NasaDailyFavouritesAdapter extends BaseAdapter {
 
-    private int internalBinarySearch(int lo, int hi, String target){
-        //if upper abd lower bound intercepts, the item was not found
-        if (lo > hi)
-            return -1;
-
-        int mid = (lo+hi)/2;
-        int res = target.compareTo(imagesList.get(mid).getDate());
-
-        if (res == 0)
-            return mid;
-        if (res > 0)
-            return internalBinarySearch(mid+1,hi,target);
-        else
-            return internalBinarySearch(lo,mid-1,target);
-
-    }
-
-    class MyListAdapter extends BaseAdapter {
-
+        /**
+         * @return number of Images in database
+         */
         @Override
         public int getCount() {
             return imagesList.size();
         }
 
+        /**
+         * Returns the NASAImage at the given position
+         * @param position - the position of the item in the listview
+         * @return - the NASAImage object at that position
+         */
         @Override
         public NASAImage getItem(int position) {
             return imagesList.get(position);
         }
 
+        /**
+         * returns the database ID of the item at this position
+         * @param position - the position of the item in the listview
+         * @return - the id of the item at position
+         */
         @Override
         public long getItemId(int position) {
             return getItem(position).getId();
         }
 
+        /**
+         * returns the view for the item at the given position
+         * @param position - the position of the item in the listview
+         * @param convertView -
+         * @param parent -
+         * @return the populated view
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
+            //inflate the view to the list layout
             LayoutInflater inflater = getLayoutInflater();
             View imageView;
-            NASAImage img = getItem(position);
             imageView = inflater.inflate(R.layout.nasa_daily_list,parent,false);
 
+            //get the item
+            NASAImage img = getItem(position);
+
+            //set all relevant fields from item
             TextView title = imageView.findViewById(R.id.NASADaily_title);
             title.setText(img.getTitle());
-
             TextView dateView = imageView.findViewById(R.id.NASADaily_imageDate);
             dateView.setText(img.getDate());
-
             ImageView imgView = imageView.findViewById(R.id.NASADaily_image);
             imgView.setImageBitmap(img.getImage());
 
@@ -246,12 +339,18 @@ public class NASADailyFavourites extends AppCompatActivity {
         }
     }
 
-    /* Date Picker code */
+    /**
+     * OnClick for the pick date button
+     * @param view
+     */
     public void showDatePickerDialog(View view) {
         DialogFragment newFragment = new DatePickerFragment(dateEntry);
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
+    /**
+     * Fragment that allosws user to pick a date and have it set to the editText
+     */
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 
         EditText dateEntry;
@@ -273,6 +372,13 @@ public class NASADailyFavourites extends AppCompatActivity {
             return new DatePickerDialog(getActivity(), this, year, month, day);
         }
 
+        /**
+         * puts the selected date into the text box in yyy-mm-dd format
+         * @param view
+         * @param year - the selected year
+         * @param month - the selected month
+         * @param day - the selected day
+         */
         public void onDateSet(DatePicker view, int year, int month, int day) {
             dateEntry.setText(String.format("%d-%d-%d",year,month+1,day));
         }

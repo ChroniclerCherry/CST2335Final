@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button toNASADailyImage = findViewById(R.id.GotoNASADailyImageButton);
         toNASADailyImage.setOnClickListener(click -> {
-            Intent goToNasaDaily = new Intent(MainActivity.this, NASADailyMain.class);
+            Intent goToNasaDaily = new Intent(MainActivity.this, NASADailyFavourites.class);
             startActivity(goToNasaDaily);
         });
     }

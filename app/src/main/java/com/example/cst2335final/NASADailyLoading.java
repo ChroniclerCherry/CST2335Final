@@ -33,6 +33,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * This activity takes a NASA image of the day url, loads and displays the information,
+ * and allows users to add it to their favourites
+ */
 public class NASADailyLoading extends AppCompatActivity {
 
     private String fullUrl;
@@ -55,6 +59,10 @@ public class NASADailyLoading extends AppCompatActivity {
 
     SQLiteDatabase db;
 
+    /**
+     * Sets up the activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +115,17 @@ public class NASADailyLoading extends AppCompatActivity {
         });
     }
 
+    /**
+     * Removes the current image from the database
+     */
     private void removeImage() {
         db.delete(NASADailyOpener.TABLE_NAME, NASADailyOpener.COL_DATE + "= ?",
                 new String[] {date});
     }
 
+    /**
+     * Adds the current image to the database
+     */
     private void addNewImage() {
         ContentValues newRowValues = new ContentValues();
         newRowValues.put(NASADailyOpener.COL_DATE, date);
@@ -121,21 +135,33 @@ public class NASADailyLoading extends AppCompatActivity {
         long newId = db.insert(NASADailyOpener.TABLE_NAME, null, newRowValues);
     }
 
+    /**
+     * Close the database when this activity is stopped
+     */
     @Override
     protected void onStop() {
         super.onStop();
         db.close();
     }
 
+    /**
+     * Async tasks that loads a json from the NASA api
+     * publishes the results to a progress bar as it goes
+     * then displays the details once done
+     */
     class NASADailyQuery extends AsyncTask< String, Integer, String> {
 
         String mediaType;
 
+        /**
+         * Scrapes the data
+         * @param args
+         * @return
+         */
         @Override
         public String doInBackground(String ... args)
         {
             try {
-
                 //create a URL object of what server to contact:
                 URL url = new URL(fullUrl);
 
@@ -165,13 +191,15 @@ public class NASADailyLoading extends AppCompatActivity {
                 title = imageData.getString("title");
                 publishProgress(60);
                 imgUrl = imageData.getString("url");
-                String imgPath = "NASADaily" + date + ".png";
                 publishProgress(80);
                 mediaType = imageData.getString("media_type");
 
-                //load the images
+                //create unique image path by date
+                String imgPath = "NASADaily" + date + ".png";
+
+                //load the images if media type is an image
                 if (mediaType.equals("image")){
-                    if(fileExist(imgPath)){
+                    if(fileExist(imgPath)){ //if we already have the image saved, then load it locally
                         FileInputStream fis = null;
                         try {
                             fis = openFileInput(imgPath);
@@ -179,7 +207,7 @@ public class NASADailyLoading extends AppCompatActivity {
                             e.printStackTrace();
                         }  image = BitmapFactory.decodeStream(fis);
                     }
-                    else {
+                    else { //if we don't have the image saved locally, then load it and save it
                         URL imageUrl = new URL(imgUrl);
                         urlConnection = (HttpURLConnection) imageUrl.openConnection();
                         urlConnection.connect();
@@ -199,6 +227,7 @@ public class NASADailyLoading extends AppCompatActivity {
             }
             catch (Exception e)
             {
+                //no file found means the API is incorrect or an invalid date was chosen
                 if (e.getClass().equals(FileNotFoundException.class)){
                     setResult(NASADailyFavourites.INVALID_URL_ERROR);
                     cancel(true);
@@ -210,20 +239,25 @@ public class NASADailyLoading extends AppCompatActivity {
             return "Done";
         }
 
+        /**
+         * After all data has been obtained, update the relevent visual elements
+         * @param args
+         */
         @Override
         protected void onPostExecute(String args){
 
-            //hide loading stuff and make them take no space
+            //if we got an image, hide the loading text
             if (mediaType.equals("image")){
                 loadingText.setVisibility(View.GONE);
-            } else {
+            } else { //if it's not an image, reuse the loading text view to inform the user that there is no image
                 loadingText.setTextColor(Color.BLUE);
                 loadingText.setText(getText(R.string.NASADaily_noImage));
             }
 
+            //hides progress bar
             progress.setVisibility(View.GONE);
 
-            //only show the image if the media type is a video
+            //only show the image if the media type is image
             if (mediaType.equals("image"))
                 imageView.setVisibility(View.VISIBLE);
 
@@ -234,20 +268,29 @@ public class NASADailyLoading extends AppCompatActivity {
             descriptionText.setVisibility(View.VISIBLE);
             favouriteCheck.setVisibility(View.VISIBLE);
 
-            //set values
+            //set values to GUI elements
             imageView.setImageBitmap(image);
             titleText.setText(title);
             dateText.setText(date);
             descriptionText.setText(description);
         }
 
+        /**
+         * Updates the progress bar
+         * @param value
+         */
         @Override
         protected void onProgressUpdate(Integer ... value){
             progress.setVisibility(View.VISIBLE);
             progress.setProgress(value[0]);
         }
 
-        public boolean fileExist(String name){
+        /**
+         * Helper method to check if a file name exists
+         * @param name - name of the file
+         * @return - true if it exists, false if not
+         */
+        private boolean fileExist(String name){
             File file = getBaseContext().getFileStreamPath(name);
             return file.exists();
         }

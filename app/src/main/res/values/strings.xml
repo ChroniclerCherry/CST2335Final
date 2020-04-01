@@ -19,4 +19,6 @@
     <string name="NASADaily_invalidUrlError">No data found. Please ensure you have entered a valid date and API key</string>
     <string name="NASADaily_confirmDelete">Would you like to delete</string>
     <string name="NASADaily_Confirm">Confirm</string>
+    <string name="NASADaily_closeButton">Close</string>
+    <string name="NASADailyImage_unfavouriteButton">Remove from favourites</string>
 </resources>

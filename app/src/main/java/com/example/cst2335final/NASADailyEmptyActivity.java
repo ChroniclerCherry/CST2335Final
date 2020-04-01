@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
- * The activity launched when on a phone and the user chooses to view an image's details
- *
+ * Displays the image details when on a phone
  */
-public class EmptyActivity extends AppCompatActivity {
+public class NASADailyEmptyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +18,7 @@ public class EmptyActivity extends AppCompatActivity {
         Intent fromFavouritesList = getIntent();
         Bundle dataToPass = fromFavouritesList.getBundleExtra("data");
 
-        NASADailyImageFragment dFragment = new NASADailyImageFragment(); //add a DetailFragment
+        NASADailyImageFragment dFragment = new NASADailyImageFragment();
         dFragment.setTablet(false);
         dFragment.setArguments( dataToPass ); //pass it a bundle for information
         getSupportFragmentManager()
