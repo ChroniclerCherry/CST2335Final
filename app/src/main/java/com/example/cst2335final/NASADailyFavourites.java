@@ -52,38 +52,49 @@ import java.util.Collections;
  */
 public class NASADailyFavourites extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    public static int VIEW_FAVOURITE = 444;
-    public static int LOAD_IMAGE = 445;
-    public static int DATABASE_CHANGED = 555;
-    public static int INVALID_URL_ERROR = 666;
+    /*Request codes*/
+    public static final int VIEW_FAVOURITE = 444;
+    public static final int LOAD_IMAGE = 445;
+
+    /*Result codes*/
+    public static final int DATABASE_CHANGED = 555;
+    public static final int INVALID_URL_ERROR = 666;
     public static final int REMOVE_IMAGE = 777;
 
+    /*listview adapter that displays the NASA image objects*/
     private NasaDailyFavouritesAdapter adapter;
-    private NASADailyImageFragment dFragment;
+    private NASADailyImageFragment dFragment; //fragment containing the details view
 
+    /* Keep track of if we are on tablet or phone */
     private boolean isTablet;
+    /*Our list of NASA image objects*/
     private ArrayList<NASAImage> imagesList = new ArrayList<>();
+    /*Our database object*/
     SQLiteDatabase db;
 
 
+    /*GUI components*/
     EditText dateEntry;
     Button searchButton;
+    EditText apiEntry;
+    Toolbar tbar;
 
+    /*constants as keys for bundles*/
     public static final String IMAGE_DATE = "DATE";
     public static final String IMAGE_DESCRIPTION = "DESCRIPTION";
     public static final String IMAGE_TITLE = "TITLE";
 
+    /*parts of the url to build*/
     final static String URL_START = "https://api.nasa.gov/planetary/apod?api_key=";
     final static String DEFAULT_API = "DgPLcIlnmN0Cwrzcg3e9NraFaYLIDI68Ysc6Zh3d";
     //my API: HafOzdnVZh0xY9W9V4aec8HTJ1byVeKphccKqgRg
     private String api;
     final static String URL_END = "&date=";
 
+    /*Shared preferences*/
     SharedPreferences prefs;
     SharedPreferences.Editor edit;
 
-    EditText apiEntry;
-    Toolbar tbar;
 
     /**
      * Sets up the activity
