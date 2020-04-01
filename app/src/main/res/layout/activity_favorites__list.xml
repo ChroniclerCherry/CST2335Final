@@ -35,8 +35,9 @@
         android:id="@+id/fav_images_listview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7.5">
-
+        android:layout_weight="7.5"
+        android:scrollbars="vertical"
+        android:scrollbarAlwaysDrawHorizontalTrack="true">
     </ListView>
 
 </LinearLayout>

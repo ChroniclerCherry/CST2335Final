@@ -2,8 +2,10 @@
  * Class Name: Nasa_Earthy_Image_Db
  * Date: 03/16/2020
  *
+ * Note: Classes are named NASA, but had to switch to Bing api midproject, so the class names still reflect NASA
+ *
  * Activity class for the view activity_nasa_earthy_image_db.xml. This activity will take user input for
- * latitude and longitude and output an image with details using Google's Earth Imagery API. The user can
+ * latitude and longitude and output an image with details using Bing's Virtual Earth API. The user can
  * then choose to save the image into a favorites list, which will store the query details in the SQLite
  * database and the user can go to the Favorites_List Activity class to view the favorites list.
  *
@@ -91,10 +93,6 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
      */
     TextView longitudeTextView;
     /**
-     * TextView variable for date that will show after the.
-     */
-    TextView dateTextView;
-    /**
      * TextView variable for showing the url path of the image
      */
     TextView urlPathTextView;
@@ -134,7 +132,6 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         imageImageView = findViewById(R.id.earthy_image);
         latitudeTextView = findViewById(R.id.latitude_textView);
         longitudeTextView = findViewById(R.id.longitude_textView);
-        dateTextView = findViewById(R.id.date_textView);
         urlPathTextView = findViewById(R.id.url_path_textView);
         progressBar = findViewById(R.id.progress_bar);
 
@@ -167,7 +164,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
 
             //calling imageQuery to get values from api
-            String earthyImageUrl = "https://api.nasa.gov/planetary/earth/imagery/?lon=" + longitudeEditText.getText().toString() + "&lat=" + latitudeEditText.getText().toString() + "&date=2014-02-01&api_key=iY2EZsiVhnakTqyq7aYKtflTqZ0wdmWjeZKbinKU";
+            String earthyImageUrl = "http://dev.virtualearth.net/REST/V1/Imagery/Map/Birdseye/" + latitudeEditText.getText().toString() + "," + longitudeEditText.getText().toString() + "/20?dir=180&ms=500,500&key=AiBIAQNVppJbc9JGabgjwN_qAWp59x9hhmYI5cDSxvf-IbKJkERsFka3_Gn9trNH";
             ImageQuery imageQuery = new ImageQuery();
             imageQuery.execute(earthyImageUrl);
 
@@ -177,9 +174,8 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
 
         //Add to Favorites
         addToFavoritesBtn.setOnClickListener((click) -> {
-            String latitude = latitudeTextView.getText().toString();
-            String longitude = longitudeTextView.getText().toString();
-            String date = dateTextView.getText().toString();
+            String latitude = latitudeTextView.getText().toString().split(" ")[1]; //only storing number, trimming out the rest of text
+            String longitude = longitudeTextView.getText().toString().split(" ")[1];
             String name = favNameEditText.getText().toString();
             String urlPath = urlPathTextView.getText().toString();
 
@@ -194,9 +190,8 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
                     //value for db columns
                     newRowValues.put(Earthy_Image_MyOpener.LATITUDE, latitude);
                     newRowValues.put(Earthy_Image_MyOpener.LONGITUDE, longitude);
-                    newRowValues.put(Earthy_Image_MyOpener.DATE, date);
                     newRowValues.put(Earthy_Image_MyOpener.NAME, name);
-                newRowValues.put(Earthy_Image_MyOpener.URL_PATH, urlPath);
+                    newRowValues.put(Earthy_Image_MyOpener.URL_PATH, urlPath);
 
                     //insert into db which returns id
                     long newId = db.insert(Earthy_Image_MyOpener.TABLE_NAME, null, newRowValues);
@@ -279,10 +274,6 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
      */
     private class ImageQuery extends AsyncTask<String, Integer, String> {
         /**
-         * String for date.
-         */
-        private String date;
-        /**
          * String for latitude.
          */
         private String latitude;
@@ -305,7 +296,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         /**
          * String value used to name the image when we save to the device
          */
-        private String id = null;
+        private String fileName = latitudeEditText.getText().toString() + longitudeEditText.getText().toString() + ".png";
 
         /**
          * Query using Google's Earthy Image API done in this method, and will set values for date, latitude, longitude, imageUrl, and image.
@@ -315,42 +306,13 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
         @Override
         protected String doInBackground(String... args) {
             String returnString = null;
+            imageUrl = args[0];
 
             try {
-                //url object of server to contact
-                URL imageURL = new URL(args[0]);
-                //open connection
-                HttpURLConnection urlConnection = (HttpURLConnection) imageURL.openConnection();
-                //wait for data
-                InputStream response = urlConnection.getInputStream();
-
-                //Build the entire string response:
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"), 8);
-                StringBuilder sb = new StringBuilder();
-
-                String line = null;
-                while ((line = reader.readLine()) != null)
-                {
-                    sb.append(line + "\n");
-                }
-                String result = sb.toString(); //result is the whole string
-
-
-                // convert string to JSON:
-                JSONObject earthyImageJson = new JSONObject(result);
-
-                //get the double associated with "value"
-                date = earthyImageJson.getString("date");
-                publishProgress(25);
-                imageUrl = earthyImageJson.getString("url");
-                publishProgress(50);
-                id = earthyImageJson.getString("id");
-
-                String fileName =  id.replace("/","") + ".png";
                 //If file exists we download from server
                 if(!fileExistance(fileName)) {
                     image = null;
-                    URL url = new URL(imageUrl);
+                    URL url = new URL(args[0]);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
                     int responseCode = connection.getResponseCode();
@@ -381,8 +343,6 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
                 return returnString = "MalFormed URL exception";
             } catch (IOException ioe) {
                 return returnString = "IOException";
-            } catch (JSONException jse) {
-                return returnString = "JSON Exception";
             } catch (Exception e) {
                 return returnString = "Exception e error";
             }
@@ -410,7 +370,6 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity {
 
             if(sentFromDoInBackground == null) {
                 imageImageView.setImageBitmap(image);
-                dateTextView.setText("Date: " + date.substring(0, 10));
                 latitudeTextView.setText("Latitude: " + latitudeEditText.getText().toString());
                 longitudeTextView.setText("Longitude: " + longitudeEditText.getText().toString());
                 urlPathTextView.setText(imageUrl);

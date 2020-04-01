@@ -16,6 +16,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,9 +28,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class Favorites_List extends AppCompatActivity {
@@ -96,7 +102,6 @@ public class Favorites_List extends AppCompatActivity {
         myList.setOnItemClickListener((list, item, position, id) -> {
             //Creating bundle to pass data to the new fragment
             Bundle dataToPass = new Bundle();
-            dataToPass.putString(DATE, elements.get(position).getDate());
             dataToPass.putString(LATITUDE, elements.get(position).getLatitude());
             dataToPass.putString(LONGITUDE, elements.get(position).getLongitude());
             dataToPass.putString(ID, Long.toString(elements.get(position).getId()));
@@ -190,8 +195,20 @@ public class Favorites_List extends AppCompatActivity {
             newView = inflater.inflate(R.layout.earthy_image_listview, parent, false);
 
             //set values for the row
-            TextView listViewLatitude = newView.findViewById(R.id.listView_favName);
-            listViewLatitude.setText(elements.get(position).getName());
+            TextView listViewFavName = newView.findViewById(R.id.listView_favName);
+            listViewFavName.setText(elements.get(position).getName());
+
+            //getting image from local storage
+            FileInputStream fis = null;
+            try {
+                fis = openFileInput(elements.get(position).getLatitude() + elements.get(position).getLongitude() + ".png");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap image = BitmapFactory.decodeStream(fis);
+
+            ImageView listViewImage = newView.findViewById(R.id.listView_image);
+            listViewImage.setImageBitmap(image);
 
             return newView;
         }
@@ -212,7 +229,6 @@ public class Favorites_List extends AppCompatActivity {
 
         //Getting column indices
         int nameIndex = results.getColumnIndex(Earthy_Image_MyOpener.NAME);
-        int dateIndex = results.getColumnIndex(Earthy_Image_MyOpener.DATE);
         int latitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LATITUDE);
         int longitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LONGITUDE);
         int idColIndex = results.getColumnIndex(Earthy_Image_MyOpener.COL_ID);
@@ -221,14 +237,13 @@ public class Favorites_List extends AppCompatActivity {
         //Iterate over results, return true if next item
         while (results.moveToNext()) {
             String name = results.getString(nameIndex);
-            String date = results.getString(dateIndex);
             String latitude = results.getString(latitudeIndex);
             String longitude = results.getString(longitudeIndex);
             long id = results.getLong(idColIndex);
             String urlPath = results.getString(urlPathIndex);
 
             //add to elements ArrayList
-            elements.add(new EarthyImage(name, date, latitude, longitude, id, urlPath));
+            elements.add(new EarthyImage(name, latitude, longitude, id, urlPath));
         }
     }
 
@@ -249,10 +264,6 @@ public class Favorites_List extends AppCompatActivity {
          */
         private String name;
         /**
-         * String value for the date the image was taken.
-         */
-        private String date;
-        /**
          * String value for latitude of the image.
          */
         private String latitude;
@@ -271,14 +282,12 @@ public class Favorites_List extends AppCompatActivity {
 
         /**
          * Single class constructor
-         * @param date String value for date
          * @param latitude String value for latitude
          * @param longitude String value for longitude
          * @param Id long value for database Id
          */
-        public EarthyImage(String name, String date, String latitude, String longitude, long Id, String urlPath) {
+        public EarthyImage(String name, String latitude, String longitude, long Id, String urlPath) {
             this.name = name;
-            this.date = date;
             this.latitude = latitude;
             this.longitude = longitude;
             this.Id = Id;
@@ -296,12 +305,6 @@ public class Favorites_List extends AppCompatActivity {
          * @return String value for longitude
          */
         public String getLongitude() { return longitude; }
-
-        /**
-         * Returns date value for when the image was taken.
-         * @return String date
-         */
-        public String getDate() { return date; }
 
         /**
          * Returns database id.

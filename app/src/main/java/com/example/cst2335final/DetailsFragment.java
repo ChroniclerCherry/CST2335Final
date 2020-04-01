@@ -45,13 +45,11 @@ public class DetailsFragment extends Fragment {
         //Widgets from fragment_details view
         TextView latitudeTextView = view.findViewById(R.id.fd_latitude);
         TextView longitudeTextView = view.findViewById(R.id.fd_longitude);
-        TextView dateTextView = view.findViewById(R.id.fd_date);
         TextView urlPathTextView = view.findViewById(R.id.fd_url);
 
         //Setting new values for the view
-        latitudeTextView.setText(dataFromActivity.getString(Favorites_List.LATITUDE));
-        longitudeTextView.setText(dataFromActivity.getString(Favorites_List.LONGITUDE));
-        dateTextView.setText(dataFromActivity.getString(Favorites_List.DATE));
+        latitudeTextView.setText("Latitude: " + dataFromActivity.getString(Favorites_List.LATITUDE));
+        longitudeTextView.setText("Longitude: " + dataFromActivity.getString(Favorites_List.LONGITUDE));
         urlPathTextView.setText(dataFromActivity.getString(Favorites_List.URL_PATH));
 
         return view;
