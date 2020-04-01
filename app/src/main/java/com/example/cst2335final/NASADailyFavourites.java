@@ -52,17 +52,17 @@ import java.util.Collections;
  */
 public class NASADailyFavourites extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    public static int REQUEST_CODE = 444;
+    public static int VIEW_FAVOURITE = 444;
+    public static int LOAD_IMAGE = 445;
     public static int DATABASE_CHANGED = 555;
     public static int INVALID_URL_ERROR = 666;
     public static final int REMOVE_IMAGE = 777;
 
     private NasaDailyFavouritesAdapter adapter;
-    private FrameLayout chatFragment;
     private NASADailyImageFragment dFragment;
 
     private boolean isTablet;
-    private ArrayList<NASAImage> imagesList = new ArrayList<NASAImage>();
+    private ArrayList<NASAImage> imagesList = new ArrayList<>();
     SQLiteDatabase db;
 
 
@@ -87,7 +87,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
 
     /**
      * Sets up the activity
-     * @param savedInstanceState
+     * @param savedInstanceState -
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +114,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
             //create the url and pass it onto NASADailyLoading to attempt to load image data from the web
             Intent gotoLoading = new Intent(NASADailyFavourites.this, NASADailyLoading.class);
             gotoLoading.putExtra("URL",URL_START+api+URL_END+dateEntry.getText().toString());
-            startActivityForResult(gotoLoading, REQUEST_CODE);
+            startActivityForResult(gotoLoading, LOAD_IMAGE);
         });
 
         //Show the toolbar
@@ -136,12 +136,15 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
 
     }
 
+    /**
+     * Save whatever's in the api textfield to saved preferences on pause
+     */
     @Override
     protected void onPause() {
         super.onPause();
         edit = prefs.edit();
         edit.putString("API",apiEntry.getText().toString());
-        edit.commit();
+        edit.apply();
     }
 
     public void displayApiHelp(View view) {
@@ -174,7 +177,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
     /**
      * Handles when menu bar items are selected
      * @param item - the selected item
-     * @return
+     * @return when menu selection is handled
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -257,7 +260,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
         ListView messagesListView = findViewById(R.id.NASADaily_listView);
         messagesListView.setAdapter(adapter = new NasaDailyFavouritesAdapter());
 
-        chatFragment = findViewById(R.id.NasaDailyImageDataFragment);
+        FrameLayout chatFragment = findViewById(R.id.NasaDailyImageDataFragment);
         isTablet = chatFragment != null;
 
         //if an item is clicked, show a snackbar to make option to remove that item
@@ -268,8 +271,12 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
                     .setAction(R.string.NASADaily_Confirm,v->{
                                 db.delete(NASADailyOpener.TABLE_NAME, NASADailyOpener.COL_ID + "= ?",
                                         new String[] {Long.toString(id)});
+
+
                                 imagesList.remove(position);
+                                Toast toast = Toast.makeText(this, getText(R.string.NASADaily_deleted) + imagesList.get(position).getTitle(), Toast.LENGTH_SHORT);
                                 adapter.notifyDataSetChanged();
+                                toast.show();
 
                                 //if it's a tablet, close the fragment
                                 if(isTablet && getSupportFragmentManager().findFragmentById(R.id.NasaDailyImageDataFragment) != null) {
@@ -302,7 +309,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
             {
                 Intent nextActivity = new Intent(NASADailyFavourites.this, NASADailyEmptyActivity.class);
                 nextActivity.putExtra("data",dataToPass); //send data to next activity
-                startActivityForResult(nextActivity,REQUEST_CODE); //make the transition
+                startActivityForResult(nextActivity,VIEW_FAVOURITE); //make the transition
             }
 
         });
@@ -313,25 +320,29 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
      * If so, we refresh the entire listview
      *
      * If an error occurred, an error message is displayed with a toast
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param requestCode - request code given to the activity that ended
+     * @param resultCode - result code sent from the ended activity
+     * @param data - any data passed by the finished activity
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == DATABASE_CHANGED) {
+
+        //if the database was changed
+        if (requestCode == LOAD_IMAGE && resultCode == DATABASE_CHANGED) {
             //reload everything from database and update listview
             imagesList.clear();
             loadDataFromDatabase();
             adapter.notifyDataSetChanged();
         }
 
-        if (requestCode == REQUEST_CODE && resultCode == INVALID_URL_ERROR) {
+        //if we got an error with not getting a file. it means either the api or date is invalid
+        if (requestCode == LOAD_IMAGE && resultCode == INVALID_URL_ERROR) {
             Toast.makeText(getApplicationContext(), R.string.NASADaily_invalidUrlError, Toast.LENGTH_LONG).show();
         }
 
-        if (requestCode == REQUEST_CODE && resultCode == REMOVE_IMAGE) {
+        //if remove from favourites button was clicked
+        if (requestCode == VIEW_FAVOURITE && resultCode == REMOVE_IMAGE) {
             String d = data.getStringExtra(IMAGE_DATE);
             NASAImage img = new NASAImage(d);
             removeImage(img);
@@ -370,7 +381,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
             String date = results.getString(dateColIndex);
             long id = results.getLong(idColIndex);
             Bitmap img;
-                FileInputStream fis = null;
+                FileInputStream fis;
                 try {
                     fis = openFileInput("NASADaily" + date + ".png");
                     img = BitmapFactory.decodeStream(fis);
@@ -459,7 +470,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
 
     /**
      * OnClick for the pick date button
-     * @param view
+     * @param view -
      */
     public void showDatePickerDialog(View view) {
         DialogFragment newFragment = new DatePickerFragment(dateEntry);

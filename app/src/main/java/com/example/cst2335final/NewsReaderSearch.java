@@ -1,6 +1,8 @@
 package com.example.cst2335final;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,6 +44,10 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     private Button faveListBtn;
     private Button backBtn;
 
+    private int lastSelectedArticle;
+    SharedPreferences prefs;
+    SharedPreferences.Editor edit;
+
     public static final String TITLE = "TITLE";
     public static final String DESC = "DESC";
     public static final String DATE = "DATE";
@@ -74,6 +80,8 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
 
        //on Item Click listener for rows to get news item details
        newsList.setOnItemClickListener((parent, view, position, id) -> {
+           lastSelectedArticle = position;
+
            Bundle dataToPass = new Bundle();
            dataToPass.putString(TITLE, newsTitles.get(position).getTitle());
            dataToPass.putString(DESC, newsTitles.get(position).getDesc());
@@ -93,6 +101,22 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
             startActivity(goToFaves);
         });
 
+        prefs = getSharedPreferences("NewsReaderLastArticle", Context.MODE_PRIVATE);
+        lastSelectedArticle = prefs.getInt("LastViewed",0);
+
+        //button to go to last article viewed
+        Button viewLastButton = findViewById(R.id.viewLastArticle);
+        viewLastButton.setOnClickListener(clk -> {
+            Bundle dataToPass = new Bundle();
+            dataToPass.putString(TITLE, newsTitles.get(lastSelectedArticle).getTitle());
+            dataToPass.putString(DESC, newsTitles.get(lastSelectedArticle).getDesc());
+            dataToPass.putString(DATE, newsTitles.get(lastSelectedArticle).getDate());
+            dataToPass.putString(LINK, newsTitles.get(lastSelectedArticle).getLink());
+            Intent nextActivity = new Intent(NewsReaderSearch.this, EmptyActivity.class);
+            nextActivity.putExtras(dataToPass); //send data to next activity
+            startActivity(nextActivity); //make the transition
+        });
+
         //toolbar
         Toolbar tbar = findViewById(R.id.toolbar);
         setSupportActionBar(tbar);
@@ -109,6 +133,14 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         TextView header = navigationView.getHeaderView(0).findViewById(R.id.header_info);
         header.setText(R.string.lia_info);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        edit = prefs.edit();
+        edit.putInt("LastViewed",lastSelectedArticle);
+        edit.apply();
     }
 
     /**

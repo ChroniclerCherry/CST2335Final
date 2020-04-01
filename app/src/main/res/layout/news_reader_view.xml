@@ -35,6 +35,15 @@
         android:text="@string/NRVbackbtn"
         android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/viewLastArticle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/backToMain"
+                android:layout_alignParentBottom="true"
+                android:text="@string/ViewLastArticle"
+                android:textAllCaps="false" />
+
     <Button
         android:id="@+id/goToFaveList"
         android:layout_width="wrap_content"

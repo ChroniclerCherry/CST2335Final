@@ -66,4 +66,6 @@
     <string name="yimi_info">Image de la Nasa du jour\nAuteur: Yimi Zheng\nVersion: 1.0</string>
     <string name="home">Accueil</string>
     <string name="help">Aidez-moi</string>
+    <string name="NASADaily_deleted">"Deleted: "</string>
+    <string name="ViewLastArticle">Voir l\'article précédent</string>
 </resources>
