@@ -54,4 +54,10 @@
     <string name="NASADaily_Confirm">Confirm</string>
     <string name="NASADaily_closeButton">Close</string>
     <string name="NASADailyImage_unfavouriteButton">Remove from favourites</string>
+    <string name="app_name" translatable="false">CST2335Final</string>
+    <string name="alertSetMsg" translatable="false">aler</string>
+    <string name="NRVbackbtn">Back</string>
+    <string name="NRVfavbtn">Favourites</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>

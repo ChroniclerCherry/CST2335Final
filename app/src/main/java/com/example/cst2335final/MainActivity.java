@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,5 +24,11 @@ public class MainActivity extends AppCompatActivity {
         Button earthyImageBtn = findViewById(R.id.karls_activity_button);
         Intent goToEarthyImageDb = new Intent(this, Nasa_Earthy_Image_Db.class);
         earthyImageBtn.setOnClickListener( clik -> startActivity(goToEarthyImageDb));
+
+        bbc = findViewById(R.id.buttonBBC);
+        bbc.setOnClickListener(click -> {
+            Intent goToNewsReader = new Intent(MainActivity.this, NewsReaderSearch.class);
+            startActivity(goToNewsReader);
+        });
     }
 }

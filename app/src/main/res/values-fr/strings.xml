@@ -34,4 +34,6 @@
     <string name="no">Non</string>
     <string name="fragment_hint">Cliquez sur un article pour voir les détails</string>
 
+    <string name="NRVbackbtn">Arrière</string>
+    <string name="NRVfavbtn">Favoris</string>
 </resources>
