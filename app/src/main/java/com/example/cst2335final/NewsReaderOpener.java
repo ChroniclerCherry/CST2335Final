@@ -4,6 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Database Opener
+ *  @Author Lia Brophy
+ *  @Version 1.0
+ *  @Date 2020-04-01
+ */
 public class NewsReaderOpener extends SQLiteOpenHelper {
 
     protected final static String DATABASE_NAME = "BBCDB";
@@ -23,6 +29,11 @@ public class NewsReaderOpener extends SQLiteOpenHelper {
 
     //This function gets called if no database file exists.
     //Look on your device in the /data/data/package-name/database directory.
+
+    /**
+     * On Create, set up
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db)
     {

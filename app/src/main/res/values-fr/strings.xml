@@ -68,4 +68,6 @@
     <string name="help">Aidez-moi</string>
     <string name="NASADaily_deleted">"Deleted: "</string>
     <string name="ViewLastArticle">Voir l\'article précédent</string>
+    <string name="BBC_help">" Cliquez sur un article pour afficher les détails et enregistrer dans les favoris"</string>
+    <string name="BBC_note_hint">" Ajouter une note"</string>
 </resources>

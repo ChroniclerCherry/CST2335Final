@@ -33,6 +33,8 @@
     <string name="no">No</string>
     <string name="fragment_hint">Click on an item to view details</string>
 
+    <string name="BBC_help">Click an article to view details and save to favourites</string>
+
     <string name="GoToNASADailyImage">NASA Image of the Day Search</string>
     <string name="NASADailyImage_ChooseDateButton">Choose Date</string>
     <string name="NASADailyImage_DateInput">yyyy-mm-dd</string>
@@ -69,4 +71,5 @@
     <string name="help">help</string>
     <string name="NASADaily_deleted">"Deleted: "</string>
     <string name="ViewLastArticle">View Previous Article</string>
+    <string name="BBC_note_hint">Add a note</string>
 </resources>

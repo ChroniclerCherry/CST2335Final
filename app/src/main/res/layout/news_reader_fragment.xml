@@ -43,13 +43,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:text="Back" />
+        android:text="@string/close" />
 
     <EditText
         android:id="@+id/noteText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint=" Add Note"
+        android:hint="@string/BBC_note_hint"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/buttonFave"
         />
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Favourite" />
+        android:text="@string/favorite_name" />
 
 
 </RelativeLayout>

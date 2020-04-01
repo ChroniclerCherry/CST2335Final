@@ -16,13 +16,4 @@
         android:layout_height="wrap_content"
         />
 
-    <!--    android:drawableLeft="@drawable/row_send"-->
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageRecv"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:layout_toRightOf="@id/textViewChat"-->
-    <!--        app:srcCompat="@drawable/row_receive" />-->
-
 </RelativeLayout>

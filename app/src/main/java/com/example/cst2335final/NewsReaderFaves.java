@@ -3,7 +3,6 @@ package com.example.cst2335final;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +10,18 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 
+/**
+ * List of articles that were saved to the database as favourites.
+ *  @Author Lia Brophy
+ *  @Version 1.0
+ *  @Date 2020-04-01
+ */
 public class NewsReaderFaves extends AppCompatActivity {
-
     private ArrayList<Favourite> faveList = new ArrayList<Favourite>();
-    //private FaveListAdapter faveListAdapter;
     private Button delete;
     private Button back;
     SQLiteDatabase db;
@@ -28,6 +29,10 @@ public class NewsReaderFaves extends AppCompatActivity {
     private FaveListAdapter faveListAdapter;
     //Favourite fave;
 
+    /**
+     * Sets up activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,21 +40,18 @@ public class NewsReaderFaves extends AppCompatActivity {
         //ref to listview in xml
         ListView favesList = findViewById(R.id.newsList);
         //set adapter on listview to populate with objects
-        //favesList.setAdapter(faveListAdapter);
-
         favesList.setAdapter(faveListAdapter = new FaveListAdapter());
-
-        loadDataFromDatabase(); //get articles from db
+        //get articles from db
+        loadDataFromDatabase();
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
+        //click listner to remove from favourites list
         favesList.setOnItemClickListener( (parent, view, position, id) -> {
-            alertDialogBuilder.setTitle("Do you want to delete this?");
-          //  alertDialogBuilder.setMessage(R.string.alertSetMsg + position + "\n"+ R.string.alertSetMsg2 + id);
-            alertDialogBuilder.setNegativeButton("Cancel", null);
-            alertDialogBuilder.setPositiveButton("Confirm", ((click, arg) -> {
+            alertDialogBuilder.setTitle(R.string.alert_message);
+            alertDialogBuilder.setNegativeButton(R.string.no, null);
+            alertDialogBuilder.setPositiveButton(R.string.ok, ((click, arg) -> {
 
-                deleteMsg(faveList.get(position)); //remove the msg from database
+                deleteMsg(faveList.get(position)); //remove the item from database
                 faveList.remove(position);
                 faveListAdapter.notifyDataSetChanged();
             }));
@@ -63,7 +65,9 @@ public class NewsReaderFaves extends AppCompatActivity {
         });
     }
 
-    //    //load news items objects from db
+    /**
+     *  Method to load items from the database
+     */
     private void loadDataFromDatabase()
     {
         //get a database connection:
@@ -106,6 +110,9 @@ public class NewsReaderFaves extends AppCompatActivity {
         }
     }
 
+    /**
+     * inner class to create a favourite object
+     */
     public class Favourite extends Object {
         private String title;
         private String date;
@@ -114,8 +121,20 @@ public class NewsReaderFaves extends AppCompatActivity {
         private String note;
         private long id;
 
+        /**
+         * Default constructor
+         */
         public Favourite() {}
 
+        /**
+         * Parameterized constructor
+         * @param title
+         * @param desc
+         * @param date
+         * @param link
+         * @param note
+         * @param id
+         */
         public Favourite(String title, String desc, String date, String link, String note, long id) {
             this.title = title;
             this.desc = desc;
@@ -124,52 +143,122 @@ public class NewsReaderFaves extends AppCompatActivity {
             this.note = note;
             this.id = id;
         }
+
+        /**
+         * Access to set object title
+         * @param title
+         */
             public void setTitle(String title) { this.title = title; }
 
+        /**
+         * Access to retrieve object title
+         * @return
+         */
             public String getTitle() {
                 return title;
             }
+
+        /**
+         * Access to set object desc
+         * @param desc
+         */
             public void setDesc(String desc) {
                 this.desc = desc;
             }
+
+        /**
+         * Access to retrieve object desc
+         * @return
+         */
             public String getDesc() {
                 return desc;
             }
+
+        /**
+         * Access to set object date
+         * @param date
+         */
             public void setDate(String date) {
                 this.date = date;
             }
+
+        /**
+         * Access to get object date
+         * @return
+         */
             public String getDate() {
                 return date;
             }
+
+        /**
+         * Access to set object link
+         * @param link
+         */
             public void setLink(String link) {
                 this.link = link;
             }
+
+        /**
+         * Access to retrieve object link
+         * @return
+         */
             public String getLink() {
                 return link;
             }
+
+        /**
+         * Access to set object note
+         * @param note
+         */
             public void setNote(String note) {
             this.note = note;
         }
+
+        /**
+         * Access to retrieve object note
+         * @return
+         */
             public String getNote() {
             return note;
         }
+
+        /**
+         * Access to set object id
+         * @param id
+         */
             public void setID(long id) {
             this.id = id;
             }
+
+        /**
+         * Access to get object id
+         * @return
+         */
             public long getID() {
             return id;
             }
           }
 
-    //Adapter to inflate view
+    /**
+     * Adapter for favourites list
+     */
     class FaveListAdapter extends BaseAdapter {
         //returns the number of items to display in the list.
+
+        /**
+         * count of objects
+         * @return
+         */
         @Override
         public int getCount() {
             return faveList.size();
         }
-        //This function should return the object that you want to
-        // display at row position in the list.
+
+        /**
+         * Return object to display at position in list
+         * @param position
+         * @return
+         */
         @Override
         public Favourite getItem(int position) {
             return faveList.get(position);
@@ -178,6 +267,14 @@ public class NewsReaderFaves extends AppCompatActivity {
         public long getItemId(int position) {
             return (long) position;
         }
+
+        /**
+         * Gets view
+         * @param position
+         * @param newView
+         * @param parent
+         * @return
+         */
         @Override
         public View getView(int position, View newView, ViewGroup parent) {
             //LayoutInflater object to load an XML layout file
@@ -195,6 +292,10 @@ public class NewsReaderFaves extends AppCompatActivity {
         }
     }
 
+    /**
+     * Memthod to remove an object from the database
+     * @param f
+     */
     protected void deleteMsg(Favourite f)
     {
         db.delete(NewsReaderOpener.TABLE_NAME, NewsReaderOpener.COL_ID + "= ?", new String[] {Long.toString(f.getID())});
