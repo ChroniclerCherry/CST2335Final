@@ -1,6 +1,8 @@
 package com.example.cst2335final;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,11 +16,14 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import org.xmlpull.v1.XmlPullParser;
@@ -37,6 +42,8 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     private NewsListAdapter newsListAdapter;
     private Button faveListBtn;
     private Button backBtn;
+    private SharedPreferences sharedPreferences;
+    SharedPreferences.Editor edit;
 
     public static final String TITLE = "TITLE";
     public static final String DESC = "DESC";
@@ -55,6 +62,11 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_reader_view);
+
+        sharedPreferences = getSharedPreferences("note", Context.MODE_PRIVATE);
+        edit = sharedPreferences.edit();
+        //sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        String note = sharedPreferences.getString("note", null);
 
         //ref to listview in xml
         ListView newsList = findViewById(R.id.newsList);
@@ -75,9 +87,11 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
            dataToPass.putString(DESC, newsTitles.get(position).getDesc());
            dataToPass.putString(DATE, newsTitles.get(position).getDate());
            dataToPass.putString(LINK, newsTitles.get(position).getLink());
+           dataToPass.putString("note", note);
            Intent nextActivity = new Intent(NewsReaderSearch.this, EmptyActivity.class);
            nextActivity.putExtras(dataToPass); //send data to next activity
            startActivity(nextActivity); //make the transition
+
         });
 
         backBtn = findViewById(R.id.backToMain);
@@ -106,7 +120,63 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    protected void onPause() {
+        super.onPause();
+        edit.putString("note", "random");
+        edit.commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //Look at your menu XML file. Put a case for every id in that file:
+        switch (item.getItemId()) {
+            //what to do when the menu item is selected:
+            case R.id.home:
+                Intent goHome = new Intent(NewsReaderSearch.this, MainActivity.class);
+                startActivity(goHome);
+                break;
+            case R.id.bbc:
+                Intent gotoBbc = new Intent(NewsReaderSearch.this, NewsReaderSearch.class);
+                startActivity(gotoBbc);
+                break;
+            case R.id.help:
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle("Click a title to view the details. Click Favourite with option note, to save an article to Favourites.");
+                alertDialogBuilder.setNegativeButton("Exit", null);
+                alertDialogBuilder.create().show();
+                break;
+        }
+        return true;
+    }
+
+    // Needed for the OnNavigationItemSelected interface:
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        String message2 = null;
+        switch(item.getItemId())
+        {
+            case R.id.bbc:
+                Intent gotoBbc = new Intent(NewsReaderSearch.this, NewsReaderSearch.class);
+                startActivity(gotoBbc);
+                break;
+            case R.id.guardian:
+                message2 = "Guardian here";
+                break;
+            case R.id.earth:
+                message2 = "Earth images here";
+                break;
+            case R.id.space:
+                message2 = "Image of the Day here";
+                break;
+            case R.id.help:
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setNegativeButton("Exit", null);
+                alertDialogBuilder.create().show();
+                break;
+        }
+        Toast.makeText(this, message2, Toast.LENGTH_LONG).show();
+        DrawerLayout drawerLayout = findViewById(R.id.drawer);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return false;
     }
 
