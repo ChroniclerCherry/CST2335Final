@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#009688"
-        app:title="@string/NASADaily_title" />
+<RelativeLayout android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        tools:openDrawer="start" >
     <LinearLayout
         android:id="@+id/NASADaily_apiLayout"
         android:layout_height="wrap_content"
@@ -98,13 +82,4 @@
             android:text="@string/NASADailyImage_searchButton" />
     </LinearLayout>
 
-        <com.google.android.material.navigation.NavigationView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/header"
-            app:menu="@menu/navigation_drawer"
-            android:id="@+id/nav_view"/>
-    </androidx.drawerlayout.widget.DrawerLayout>
 </RelativeLayout>

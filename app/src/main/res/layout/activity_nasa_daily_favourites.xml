@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#009688"
-        app:title="@string/NASADaily_title" />
+        app:title="BBC News" />
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer"
@@ -19,13 +19,15 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         tools:openDrawer="start" >
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/NASADaily_apiLayout"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:gravity="center_horizontal">
+        android:gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
@@ -46,7 +48,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/NASADaily_apiLayout"
-        android:hint="@string/NASADailyImage_ApiKeyEditText" />
+        android:hint="@string/NASADailyImage_ApiKeyEditText"
+        android:inputType="text" />
 
     <ListView
         android:layout_marginTop="10dp"
@@ -91,13 +94,15 @@
             android:text="@string/NASADailyImage_searchButton" />
     </LinearLayout>
 
-        <com.google.android.material.navigation.NavigationView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/header"
-            app:menu="@menu/navigation_drawer"
-            android:id="@+id/nav_view"/>
-    </androidx.drawerlayout.widget.DrawerLayout>
+</RelativeLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/navigation_drawer"
+        android:id="@+id/nav_view"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>
 </RelativeLayout>
