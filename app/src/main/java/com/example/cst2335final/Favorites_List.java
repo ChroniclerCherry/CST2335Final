@@ -66,7 +66,7 @@ public class Favorites_List extends AppCompatActivity {
         setContentView(R.layout.activity_favorites__list);
 
         //Show the toolbar
-        tbar = findViewById(R.id.toolbar_favs);
+        tbar = findViewById(R.id.toolbar);
         setSupportActionBar(tbar);
 
         //Adapter for favorites ListView
