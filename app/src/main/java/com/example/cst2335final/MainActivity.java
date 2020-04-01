@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         Intent goToEarthyImageDb = new Intent(this, Nasa_Earthy_Image_Db.class);
         earthyImageBtn.setOnClickListener( clik -> startActivity(goToEarthyImageDb));
 
-        bbc = findViewById(R.id.buttonBBC);
+        Button bbc = findViewById(R.id.buttonBBC);
         bbc.setOnClickListener(click -> {
             Intent goToNewsReader = new Intent(MainActivity.this, NewsReaderSearch.class);
             startActivity(goToNewsReader);
