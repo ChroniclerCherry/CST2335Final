@@ -1,9 +1,10 @@
 package com.example.cst2335final;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +21,10 @@ import java.util.ArrayList;
 public class NewsReaderFaves extends AppCompatActivity {
 
     private ArrayList<Favourite> faveList = new ArrayList<Favourite>();
-    //private FaveListAdapter faveListAdapter;
-    private Button delete;
     private Button back;
     SQLiteDatabase db;
     Cursor results;
     private FaveListAdapter faveListAdapter;
-    //Favourite fave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +32,9 @@ public class NewsReaderFaves extends AppCompatActivity {
         setContentView(R.layout.news_reader_fave_view);
         //ref to listview in xml
         ListView favesList = findViewById(R.id.newsList);
-        //set adapter on listview to populate with objects
-        //favesList.setAdapter(faveListAdapter);
 
+
+        //set adapter on listview to populate with objects
         favesList.setAdapter(faveListAdapter = new FaveListAdapter());
 
         loadDataFromDatabase(); //get articles from db

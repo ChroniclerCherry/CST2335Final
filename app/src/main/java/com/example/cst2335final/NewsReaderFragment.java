@@ -3,6 +3,7 @@ package com.example.cst2335final;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,13 +27,18 @@ public class NewsReaderFragment extends Fragment {
     private String date;
     private String link;
     private String note;
+    private EditText noteBox;
     private ContentValues newRow = new ContentValues();
+    private SharedPreferences sharedPreferences;
+    SharedPreferences.Editor edit;
 
     private AppCompatActivity parentActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_details, container, false);
@@ -68,8 +74,16 @@ public class NewsReaderFragment extends Fragment {
         String link = dataFromActivity.getString(NewsReaderSearch.LINK);
         linkView.setText(link);
 
-        EditText noteBox = result.findViewById(R.id.noteText);
+        noteBox = result.findViewById(R.id.noteText);
         noteBox.setText(note);
+
+        sharedPreferences = getActivity().getSharedPreferences("note", Context.MODE_PRIVATE);
+        edit = sharedPreferences.edit();
+        sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String note = sharedPreferences.getString("note", null);
+
+        edit.putString("note", noteBox.getText().toString());
+        edit.commit();
 
         // get the fave button, and add a click listener:
         Button faveBtn = result.findViewById(R.id.buttonFave);
@@ -95,6 +109,7 @@ public class NewsReaderFragment extends Fragment {
             long newId = db.insert(NewsReaderOpener.TABLE_NAME, null, newRow);
             //Show the item was inserted
             Snackbar.make(faveBtn, "You added an item to favourites ", Snackbar.LENGTH_SHORT).show();
+
         });
 
         // get the back button, and add a click listener to finish and go back to the list of titles
@@ -112,6 +127,7 @@ public class NewsReaderFragment extends Fragment {
         public void onAttach (Context context){
             super.onAttach(context);
             parentActivity = (AppCompatActivity) context;
+
         }
-    }
+}
 
