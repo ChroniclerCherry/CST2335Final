@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Nasa_Earthy_Image_Db"
     android:background="#b7d7e8"
-    android:orientation="vertical"
-    android:weightSum="2.25">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -20,16 +19,19 @@
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         tools:openDrawer="start" >
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="1dp"
         android:visibility="invisible"
-        android:layout_weight="0.05"
         style="?android:attr/progressBarStyleHorizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <!-- Earthy Image Layout -->
     <LinearLayout
@@ -110,58 +112,59 @@
         android:orientation="horizontal"
         android:background="#daebe8">
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="7">
+
+            <TextView
+                android:id="@+id/search_for_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:weightSum="7">
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:padding="10dp"
+                android:text="@string/search_text"
+                android:textSize="25dp" />
 
-                <TextView
-                    android:id="@+id/search_for_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:text="@string/search_text"
-                    android:textSize="25dp"
-                    android:padding="10dp"/>
+            <EditText
+                android:id="@+id/enter_latitude"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:hint="@string/lat_hint"
+                android:padding="5dp" />
 
-                <EditText
-                    android:id="@+id/enter_latitude"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:hint="@string/lat_hint"
-                    android:padding="5dp"/>
+            <EditText
+                android:id="@+id/enter_longitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/long_hint"
+                android:padding="5dp" />
 
-                <EditText
-                    android:id="@+id/enter_longitude"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:hint="@string/long_hint"
-                    android:padding="5dp"/>
+            <Button
+                android:id="@+id/search_btn"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="#87bdd8"
+                android:text="@string/search_btn" />
 
-                <Button
-                    android:id="@+id/search_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/search_btn"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:backgroundTint="#87bdd8"/>
+            <Button
+                android:id="@+id/view_saved_img_btn"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="#87bdd8"
+                android:text="@string/view_favorites_btn" />
 
-                <Button
-                    android:id="@+id/view_saved_img_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/view_favorites_btn"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:backgroundTint="#87bdd8"/>
+        </LinearLayout>
 
-            </LinearLayout>
+    </LinearLayout>
 
     </LinearLayout>
 
@@ -173,5 +176,6 @@
             app:headerLayout="@layout/header"
             app:menu="@menu/navigation_drawer"
             android:id="@+id/nav_view"/>
+
     </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>
