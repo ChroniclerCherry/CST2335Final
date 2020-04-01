@@ -11,4 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/GoToNASADailyImage" />
+
+    <Button
+        android:id="@+id/karls_activity_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/go_to_karls_activity"
+        tools:ignore="MissingConstraints" />
 </LinearLayout>

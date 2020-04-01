@@ -1,5 +1,38 @@
 <resources>
     <string name="app_name">CST2335Final</string>
+    <string name="go_to_karls_activity">NASA Earthy Image Database</string>
+    <string name="search_text">Search For An Image!</string>
+    <string name="lat_hint">Enter Latitude</string>
+    <string name="long_hint">Enter Longitude</string>
+    <string name="search_btn">Search</string>
+    <string name="view_favorites_btn">View Favorites</string>
+    <string name="favorites_list">Favorites List</string>
+    <string name="favorites_list_desc">Favorite an image to save for later!</string>
+
+    <string name="latitude">Latitude: </string>
+    <string name="longitude">Longitude: </string>
+    <string name="date">Date: </string>
+    <string name="favorite_name">Give Title</string>
+    <string name="is_empty">Cant be empty!</string>
+    <string name="error_toast">Error : </string>
+    <string name="add_to_favorites">Add to Favorites!</string>
+    <string name="add_snackbar">Added to favorites!</string>
+
+    <string name="search_btn_toast">Retrieving Image...</string>
+    <string name="query_error_toast">Sorry! No image available for those coordinates</string>
+
+    <string name="menu_title">NASA Earth Imagery Database</string>
+    <string name="menu_title_favs">Your Favorites List</string>
+    <string name="help_menu_favs">This is your favorites list! Click on an item to view the details and clicking the link will open the image in the browser. Hold down on an item if you would like to remove it from the list.</string>
+    <string name="help_menu_item">Hello! Just type in latitude/longitude coordinates and the app will query for the image. If you like the image, give it a name and add it to your favorites list! Click the "view favorites" button to view your favorites list.</string>
+    <string name="ok">Ok!</string>
+
+    <string name="alert_title">Do you want to remove this item?</string>
+    <string name="alert_message">Click yes to remove</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="fragment_hint">Click on an item to view details</string>
+
     <string name="GoToNASADailyImage">NASA Image of the Day Search</string>
     <string name="NASADailyImage_ChooseDateButton">Choose Date</string>
     <string name="NASADailyImage_DateInput">yyyy-mm-dd</string>

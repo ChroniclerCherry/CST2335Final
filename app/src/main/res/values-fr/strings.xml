@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CST2335Final</string>
+    <string name="go_to_karls_activity">NASA base de données d\'images de la terre</string>
+    <string name="search_text">Rechercher une image</string>
+    <string name="lat_hint">Entrez la latitude</string>
+    <string name="long_hint">Entrez la longitude</string>
+    <string name="search_btn">Chercher</string>
+    <string name="view_favorites_btn">Afficher les favoris</string>
+    <string name="favorites_list">Liste des favoris</string>
+    <string name="favorites_list_desc">Préférer une image à enregistrer pour plus tard!</string>
+
+    <string name="latitude">Latitude: </string>
+    <string name="longitude">Longitude: </string>
+    <string name="date">Date: </string>
+    <string name="favorite_name">Donner un titre</string>
+    <string name="is_empty">Je ne peux pas être vide!</string>
+    <string name="error_toast">Pardon! Pas d\'image pour ces coordonnées</string>
+    <string name="add_to_favorites">Ajouter aux Favoris!</string>
+    <string name="add_snackbar">Ajouté aux favoris!</string>
+
+    <string name="query_error_toast">Pardon! Aucune image disponible pour ces coordonnées</string>
+    <string name="search_btn_toast">Récupération d\'image...</string>
+    <string name="menu_title">Base de données d\'images de la Terre de la NASA</string>
+    <string name="menu_title_favs">Votre liste de favoris</string>
+    <string name="help_menu_favs">Ceci est votre liste de favoris! Cliquez sur un élément pour afficher les détails ou maintenez enfoncé un élément si vous souhaitez le supprimer de la liste.</string>
+    <string name="help_menu_item">Salut! Saisissez simplement les coordonnées de latitude / longitude et l\'application recherchera l\'image. Si vous aimez l\'image, donnez-lui un nom et ajoutez-la à votre liste de favoris! Cliquez sur le bouton "afficher les favoris" pour afficher votre liste de favoris.</string>
+    <string name="ok">D\'accord!</string>
+
+    <string name="alert_title">Voulez-vous supprimer cet article?</string>
+    <string name="alert_message">Cliquez oui pour supprimer</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="fragment_hint">Cliquez sur un article pour voir les détails</string>
+
+</resources>

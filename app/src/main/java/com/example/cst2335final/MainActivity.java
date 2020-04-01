@@ -18,5 +18,9 @@ public class MainActivity extends AppCompatActivity {
             Intent goToNasaDaily = new Intent(MainActivity.this, NASADailyFavourites.class);
             startActivity(goToNasaDaily);
         });
+
+        Button earthyImageBtn = findViewById(R.id.karls_activity_button);
+        Intent goToEarthyImageDb = new Intent(this, Nasa_Earthy_Image_Db.class);
+        earthyImageBtn.setOnClickListener( clik -> startActivity(goToEarthyImageDb));
     }
 }
