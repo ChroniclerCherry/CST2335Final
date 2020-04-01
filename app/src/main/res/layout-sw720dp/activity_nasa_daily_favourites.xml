@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#009688"
+        app:title="BBC News" />
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        tools:openDrawer="start" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/NASADaily_apiLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_toStartOf="@id/NasaDailyImageDataFragment">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/NASADailyImage_ApiInformation"/>
+
+        <ImageButton
+            android:id="@+id/NASADaily_ApiHelpButton"
+            android:textSize= "12sp"
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:onClick="displayApiHelp"
+            android:background="@drawable/help"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/NASADaily_ApiEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/NASADaily_apiLayout"
+        android:hint="@string/NASADailyImage_ApiKeyEditText"
+        android:layout_toStartOf="@id/NasaDailyImageDataFragment"/>
+
+    <ListView
+        android:layout_marginTop="10dp"
+        android:id="@+id/NASADaily_listView"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/NASADaily_ApiEditText">
+        android:layout_above="@id/inputLinearLayout"
+    </ListView>
+
+    <FrameLayout
+        android:id="@+id/NasaDailyImageDataFragment"
+        android:layout_width="match_parent"
+        android:layout_toEndOf="@id/NASADaily_listView"
+        android:layout_height="match_parent"
+        />
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@id/NasaDailyImageDataFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputLinearLayout">
+
+        <Button
+            android:id="@+id/NasaDailyImageDatePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:onClick="showDatePickerDialog"
+            android:text="@string/NASADailyImage_ChooseDateButton"/>
+
+        <EditText
+            android:id="@+id/NasaDailyImageDateEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="date"
+
+            android:hint="@string/NASADailyImage_DateInput"
+            android:importantForAutofill="no" />
+
+        <Button
+            android:id="@+id/NasaDailyImageSearchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:text="@string/NASADailyImage_searchButton" />
+    </LinearLayout>
+
+        </RelativeLayout>
+        <com.google.android.material.navigation.NavigationView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/header"
+            app:menu="@menu/navigation_drawer"
+            android:id="@+id/nav_view"/>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+</RelativeLayout>

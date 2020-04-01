@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bbc"
+        android:icon="@drawable/bbc"
+        android:title="BBC News" />
+
+    <item
+        android:title="The Guardian"
+        android:id="@+id/guardian"
+        android:icon="@drawable/guardian"
+        android:enabled="false"/>
+
+    <item
+        android:title="@string/menu_title"
+        android:id="@+id/earth"
+        android:icon="@drawable/earth" />
+
+    <item
+        android:title="NASA Image of Day"
+        android:id="@+id/space"
+        android:icon="@drawable/space" />
+
+</menu>

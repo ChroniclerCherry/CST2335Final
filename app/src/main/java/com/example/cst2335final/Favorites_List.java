@@ -66,7 +66,7 @@ public class Favorites_List extends AppCompatActivity {
         setContentView(R.layout.activity_favorites__list);
 
         //Show the toolbar
-        tbar = findViewById(R.id.toolbar_favs);
+        tbar = findViewById(R.id.toolbar);
         setSupportActionBar(tbar);
 
         //Adapter for favorites ListView
@@ -126,7 +126,7 @@ public class Favorites_List extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.example_menu, menu);
+        inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -140,7 +140,7 @@ public class Favorites_List extends AppCompatActivity {
         String message = null;
 
         switch(item.getItemId()) {
-            case R.id.help_item:
+            case R.id.help:
                 message = getResources().getString(R.string.help_menu_favs);
         }
 

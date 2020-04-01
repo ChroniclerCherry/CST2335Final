@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">CST2335Final</string>
-    <string name="go_to_karls_activity">NASA Earthy Image Database</string>
+    <string name="go_to_karls_activity">Bing Virtual Earth Imagery</string>
     <string name="search_text">Search For An Image!</string>
     <string name="lat_hint">Enter Latitude</string>
     <string name="long_hint">Enter Longitude</string>
@@ -21,7 +21,7 @@
     <string name="search_btn_toast">Retrieving Image...</string>
     <string name="query_error_toast">Sorry! No image available for those coordinates</string>
 
-    <string name="menu_title">NASA Earth Imagery Database</string>
+    <string name="menu_title">Bing Virtual Earth Imagery</string>
     <string name="menu_title_favs">Your Favorites List</string>
     <string name="help_menu_favs">This is your favorites list! Click on an item to view the details and clicking the link will open the image in the browser. Hold down on an item if you would like to remove it from the list.</string>
     <string name="help_menu_item">Hello! Just type in latitude/longitude coordinates and the app will query for the image. If you like the image, give it a name and add it to your favorites list! Click the "view favorites" button to view your favorites list.</string>
@@ -33,4 +33,43 @@
     <string name="no">No</string>
     <string name="fragment_hint">Click on an item to view details</string>
 
+    <string name="BBC_help">Click an article to view details and save to favourites</string>
+
+    <string name="GoToNASADailyImage">NASA Image of the Day Search</string>
+    <string name="NASADailyImage_ChooseDateButton">Choose Date</string>
+    <string name="NASADailyImage_DateInput">yyyy-mm-dd</string>
+    <string name="NASADailyImage_searchButton">Search</string>
+    <string name="NASADailyImage_title">NASA Image of the Day</string>
+    <string name="NASADailyImage_SearchNewTextView">"Search for image: "</string>
+    <string name="NASADailyImage_viewFavouritesButton">View and Search Images</string>
+    <string name="NASADailyImage_changeAPIButton">Changement</string>
+    <string name="NASADailyImage_ApiKeyEditText">Enter your NASA API key here</string>
+    <string name="NASADailyImage_ApiInformation">(Optional) Your NASA api key</string>
+    <string name="NasaDaily_apiInformation">Don\'t worry, This app uses a default API key if you don\'t provide one. \n\nBut if you want, you can register for your own personal API at https://api.nasa.gov/</string>
+    <string name="NASADaily_okay">Ok</string>
+    <string name="NASADaily_goToSite">Go to api.nasa.gov</string>
+    <string name="NASADailyImage_favouriteButton">Favourite</string>
+    <string name="NASADaily_loadingText">"Loading data from: "</string>
+    <string name="NASADaily_noImage">No image found on this date</string>
+    <string name="NASADaily_invalidUrlError">No data found. Please ensure you have entered a valid date and API key</string>
+    <string name="NASADaily_confirmDelete">Would you like to delete</string>
+    <string name="NASADaily_Confirm">Confirm</string>
+    <string name="NASADaily_closeButton">Close</string>
+    <string name="NASADailyImage_unfavouriteButton">Remove from favourites</string>
+    <string name="alertSetMsg" translatable="false">aler</string>
+    <string name="NRVbackbtn">Back</string>
+    <string name="NRVfavbtn">Favourites</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="error_not_implemented">This feature has not yet been implemented</string>
+    <string name="title_bbc" translatable="false">BBC News Reader</string>
+    <string name="lia_info">BBC News Reader \nAuthor: Lia Brophy \nVersion: 1.0</string>
+    <string name="NASADaily_title">Nasa Image of the Day</string>
+    <string name="NASADaily_help">Search by date to find your favourite NASA images of the day! Click any of your favourites to see their details, or long click to delete them</string>
+    <string name="yimi_info">Nasa Image of the Day \nAuthor: Yimi Zheng \nVersion: 1.0</string>
+    <string name="home">Home</string>
+    <string name="help">help</string>
+    <string name="NASADaily_deleted">"Deleted: "</string>
+    <string name="ViewLastArticle">View Previous Article</string>
+    <string name="BBC_note_hint">Add a note</string>
 </resources>

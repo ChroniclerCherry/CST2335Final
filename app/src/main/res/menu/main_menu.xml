@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="@string/home"
+        android:id="@+id/home"
+        android:icon="@drawable/home"
+        android:orderInCategory="1"
+        app:showAsAction="always"/>
+
+    <item
+        android:title="@string/help"
+        android:id="@+id/help"
+        android:icon="@drawable/help"
+        android:orderInCategory="1000"
+        app:showAsAction="always"/>
+
+    <item
+        android:title="BBC"
+        android:id="@+id/bbc"
+        android:icon="@drawable/bbc"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="50"/>
+
+    <item
+        android:title="The Guardian"
+        android:id="@+id/guardian"
+        android:icon="@drawable/guardian"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="60"
+        android:enabled="false"/>
+
+    <item
+        android:title="@string/menu_title"
+        android:id="@+id/earth"
+        android:icon="@drawable/earth"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="50"/>
+
+    <item
+        android:title="@string/NASADaily_title"
+        android:id="@+id/space"
+        android:icon="@drawable/space"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="50"/>
+
+
+</menu>
