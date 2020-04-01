@@ -2,8 +2,12 @@ package com.example.cst2335final;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
@@ -18,6 +22,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -30,6 +37,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileInputStream;
@@ -42,7 +50,7 @@ import java.util.Collections;
  * Displays a list of favourited NASA images and contains navigation to search and add new ones
  * or view the details of favourites images
  */
-public class NASADailyFavourites extends AppCompatActivity {
+public class NASADailyFavourites extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     public static int REQUEST_CODE = 444;
     public static int DATABASE_CHANGED = 555;
@@ -75,6 +83,7 @@ public class NASADailyFavourites extends AppCompatActivity {
     SharedPreferences.Editor edit;
 
     EditText apiEntry;
+    Toolbar tbar;
 
     /**
      * Sets up the activity
@@ -108,6 +117,23 @@ public class NASADailyFavourites extends AppCompatActivity {
             startActivityForResult(gotoLoading, REQUEST_CODE);
         });
 
+        //Show the toolbar
+        tbar = findViewById(R.id.toolbar);
+        setSupportActionBar(tbar);
+
+        //NavigationDrawer
+        DrawerLayout drawer = findViewById(R.id.drawer);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
+                drawer, tbar, R.string.open, R.string.close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
+        TextView header = navigationView.getHeaderView(0).findViewById(R.id.header_info);
+        header.setText(R.string.yimi_info);
+        navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -130,6 +156,97 @@ public class NASADailyFavourites extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
 
+    }
+
+    /**
+     * Method to create the options menu
+     * @param menu Menu variable for the menu we want to inflate
+     * @return boolean value to indicate menu was inflated
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    /**
+     * Handles when menu bar items are selected
+     * @param item - the selected item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String message2 = null;
+        switch(item.getItemId())
+        {
+            case R.id.home:
+                Intent goHome = new Intent(NASADailyFavourites.this, MainActivity.class);
+                startActivity(goHome);
+            case R.id.bbc:
+                Intent gotoBbc = new Intent(NASADailyFavourites.this, NewsReaderSearch.class);
+                startActivity(gotoBbc);
+                break;
+            case R.id.guardian:
+                message2 = getText(R.string.error_not_implemented).toString();
+                break;
+            case R.id.earth:
+                Intent gotoEarth = new Intent(NASADailyFavourites.this, Nasa_Earthy_Image_Db.class);
+                startActivity(gotoEarth);
+                break;
+            case R.id.space:
+                Intent gotoSpace = new Intent(NASADailyFavourites.this, NASADailyFavourites.class);
+                startActivity(gotoSpace);
+                break;
+            case R.id.help:
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(R.string.NASADaily_title)
+                        //Message
+                        .setMessage(getResources().getString(R.string.NASADaily_help))
+                        //what the Yes button does:
+                        .setPositiveButton(getResources().getString(R.string.ok), (click, arg) -> { })
+                        //Show the dialog
+                        .create().show();
+                break;
+        }
+
+        if (message2 != null)
+            Toast.makeText(this, message2, Toast.LENGTH_LONG).show();
+        return true;
+    }
+
+    /**
+     * Handles navigation menu when an item is selected
+     * @param item - the selected item
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        String message2 = null;
+        switch(item.getItemId())
+        {
+            case R.id.bbc:
+                Intent gotoBbc = new Intent(NASADailyFavourites.this, NewsReaderSearch.class);
+                startActivity(gotoBbc);
+                break;
+            case R.id.guardian:
+                message2 = getText(R.string.error_not_implemented).toString();
+                break;
+            case R.id.earth:
+                Intent gotoEarth = new Intent(NASADailyFavourites.this, Nasa_Earthy_Image_Db.class);
+                startActivity(gotoEarth);
+                break;
+            case R.id.space:
+                Intent gotoSpace = new Intent(NASADailyFavourites.this, NASADailyFavourites.class);
+                startActivity(gotoSpace);
+                break;
+        }
+
+        if (message2 != null)
+            Toast.makeText(this, message2, Toast.LENGTH_LONG).show();
+        DrawerLayout drawerLayout = findViewById(R.id.drawer);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return false;
     }
 
     /**

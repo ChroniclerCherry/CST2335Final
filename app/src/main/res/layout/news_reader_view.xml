@@ -70,8 +70,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:headerLayout="@layout/news_reader_header"
-            app:menu="@menu/news_reader_drawer"
+            app:headerLayout="@layout/header"
+            app:menu="@menu/navigation_drawer"
             android:id="@+id/nav_view"/>
 
     </androidx.drawerlayout.widget.DrawerLayout>

@@ -4,9 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
         <TextView
+            android:id="@+id/header_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="BBC News Reader \nAuthor: Lia Brophy \nVersion: 1.0"
+            android:text="INFO HERE"
             android:layout_alignParentBottom="true" />
 
 </LinearLayout>

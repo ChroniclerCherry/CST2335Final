@@ -59,4 +59,12 @@
     <string name="NRVfavbtn">Favourites</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="error_not_implemented">This feature has not yet been implemented</string>
+    <string name="title_bbc">BBC News Reader</string>
+    <string name="lia_info">BBC News Reader \nAuthor: Lia Brophy \nVersion: 1.0</string>
+    <string name="NASADaily_title">Nasa Image of the Day</string>
+    <string name="NASADaily_help">Search by date to find your favourite NASA images of the day! Click any of your favourites to see their details, or long click to delete them</string>
+    <string name="yimi_info">Nasa Image of the Day \nAuthor: Yimi Zheng \nVersion: 1.0</string>
+    <string name="home">Home</string>
+    <string name="help">help</string>
 </resources>

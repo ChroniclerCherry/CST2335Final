@@ -11,14 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import org.xmlpull.v1.XmlPullParser;
@@ -47,7 +51,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.news_reader_menu, menu);
+        inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -102,11 +106,86 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
+        TextView header = navigationView.getHeaderView(0).findViewById(R.id.header_info);
+        header.setText(R.string.lia_info);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Handles when menu bar items are selected
+     * @param item - the selected item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String message2 = null;
+        switch(item.getItemId())
+        {
+            case R.id.home:
+                Intent goHome = new Intent(NewsReaderSearch.this, MainActivity.class);
+                startActivity(goHome);
+            case R.id.bbc:
+                Intent gotoBbc = new Intent(NewsReaderSearch.this, NewsReaderSearch.class);
+                startActivity(gotoBbc);
+                break;
+            case R.id.guardian:
+                message2 = getText(R.string.error_not_implemented).toString();
+                break;
+            case R.id.earth:
+                Intent gotoEarth = new Intent(NewsReaderSearch.this, Nasa_Earthy_Image_Db.class);
+                startActivity(gotoEarth);
+                break;
+            case R.id.space:
+                Intent gotoSpace = new Intent(NewsReaderSearch.this, NASADailyFavourites.class);
+                startActivity(gotoSpace);
+                break;
+            case R.id.help:
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(R.string.title_bbc)
+                        //Message
+                        .setMessage("this is an example message for instructions") //TODO: ADD INSTRUCTIONS FOR YOUR ACTIVITY
+                        //what the Yes button does:
+                        .setPositiveButton(getResources().getString(R.string.ok), (click, arg) -> { })
+                        //Show the dialog
+                        .create().show();
+                break;
+        }
+
+        if (message2 != null)
+            Toast.makeText(this, message2, Toast.LENGTH_LONG).show();
+        return true;
+    }
+
+    /**
+     * Handles navigation menu when an item is selected
+     * @param item - the selected item
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        String message2 = null;
+        switch(item.getItemId())
+        {
+            case R.id.bbc:
+                Intent gotoBbc = new Intent(NewsReaderSearch.this, NewsReaderSearch.class);
+                startActivity(gotoBbc);
+                break;
+            case R.id.guardian:
+                message2 = getText(R.string.error_not_implemented).toString();
+                break;
+            case R.id.earth:
+                Intent gotoEarth = new Intent(NewsReaderSearch.this, Nasa_Earthy_Image_Db.class);
+                startActivity(gotoEarth);
+                break;
+            case R.id.space:
+                Intent gotoSpace = new Intent(NewsReaderSearch.this, NASADailyFavourites.class);
+                startActivity(gotoSpace);
+                break;
+        }
+
+        if (message2 != null)
+            Toast.makeText(this, message2, Toast.LENGTH_LONG).show();
+        DrawerLayout drawerLayout = findViewById(R.id.drawer);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return false;
     }
 
