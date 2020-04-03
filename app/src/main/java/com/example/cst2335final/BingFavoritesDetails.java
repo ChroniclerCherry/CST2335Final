@@ -39,6 +39,7 @@ public class BingFavoritesDetails extends AppCompatActivity {
         TextView latitudeTextView = findViewById(R.id.favDetails_latitude);
         TextView longitudeTextView = findViewById(R.id.favDetails_longitude);
         TextView urlTextView = findViewById(R.id.favDetails_imageurl);
+        TextView filePathTextView = findViewById(R.id.favDetails_filePath);
 
         //Getting data from bundle
         Bundle dataFromActivity = getIntent().getExtras();
@@ -48,9 +49,10 @@ public class BingFavoritesDetails extends AppCompatActivity {
         String filePath = dataFromActivity.getString(Favorites_List.FILE_PATH);
 
         //Changing widget values
-        latitudeTextView.setText("Latitude: " + latitude);
-        longitudeTextView.setText("Longitude: " + longitude);
-        urlTextView.setText(url);
+        latitudeTextView.setText(getResources().getString(R.string.latitude) + " " + latitude);
+        longitudeTextView.setText(getResources().getString(R.string.longitude) + " " + longitude);
+        urlTextView.setText(getResources().getString(R.string.view_online) + " " + dataFromActivity.getString(Favorites_List.URL_PATH));
+        filePathTextView.setText(getResources().getString(R.string.saved_on_device) + " " + filePath);
 
         //getting image from local storage
         FileInputStream fis = null;

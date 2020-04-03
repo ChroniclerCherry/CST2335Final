@@ -52,7 +52,7 @@ public class DetailsFragment extends Fragment {
         latitudeTextView.setText(getResources().getString(R.string.latitude) + " " + dataFromActivity.getString(Favorites_List.LATITUDE));
         longitudeTextView.setText(getResources().getString(R.string.longitude) + " " + dataFromActivity.getString(Favorites_List.LONGITUDE));
         urlPathTextView.setText(getResources().getString(R.string.view_online) + " " + dataFromActivity.getString(Favorites_List.URL_PATH));
-        filePathTextView.setText(getResources().getString(R.string.saved_on_device) + " " + R.id.favDetails_filePath);
+        filePathTextView.setText(getResources().getString(R.string.saved_on_device) + " " + dataFromActivity.getString(Favorites_List.FILE_PATH));
 
         return view;
     }

@@ -80,6 +80,10 @@ public class BingPicture extends AppCompatActivity {
      * String value to store url of the image, consists of api link, latitude/longitude parameters, and my personal api key
      */
     private String imageURL;
+    /**
+     * String value to store name of image after if saved to the device
+     */
+    private String filePath;
 
     /**
      * Method will perform query to Bing's Virtual Earth api and save the image to the device. Will then initialize all variables from the view and set their values.
@@ -117,7 +121,7 @@ public class BingPicture extends AppCompatActivity {
             //add a new row to the db
             ContentValues newRowValues = new ContentValues();
             //provide a value for the db columns
-            newRowValues.put(Earthy_Image_MyOpener.FILE_PATH, latitude + longitude + ".png");
+            newRowValues.put(Earthy_Image_MyOpener.FILE_PATH, filePath);
             newRowValues.put(Earthy_Image_MyOpener.LATITUDE, latitude);
             newRowValues.put(Earthy_Image_MyOpener.LONGITUDE, longitude);
             newRowValues.put(Earthy_Image_MyOpener.URL_PATH, imageURL);
@@ -228,6 +232,7 @@ public class BingPicture extends AppCompatActivity {
                 latitudeTextView.setText("Latitude: " + latitude);
                 longitudeTextView.setText("Longitude" + longitude);
                 imageURL = imageUrl; //using this variable for the bundle
+                filePath = fileName;
                 progressBar.setVisibility(View.INVISIBLE);
             }
             //A lot of coordinates do not contain images, so we show error toast message to user
