@@ -26,7 +26,7 @@
     <string name="menu_title">Bing Virtual Earth Imagery</string>
     <string name="menu_title_favs">Your Favorites List</string>
     <string name="help_menu_favs">This is your favorites list! Click on an item to view the details and clicking the link will open the image in the browser. Hold down on an item if you would like to remove it from the list.</string>
-    <string name="help_menu_item">Hello! Just type in latitude/longitude coordinates and the app will query for the image. If you like the image, give it a name and add it to your favorites list! Click the "view favorites" button to view your favorites list.</string>
+    <string name="help_menu_item">Hello! Just type in latitude/longitude coordinates and the app will query for the image. If you like the image, push the button to add it to your favorites list! Click the "view favorites" button to view your favorites list.</string>
     <string name="ok">Ok!</string>
 
     <string name="alert_title">Do you want to remove this item?</string>
