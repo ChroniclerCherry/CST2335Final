@@ -11,6 +11,8 @@
 
     <string name="latitude">Latitude: </string>
     <string name="longitude">Longitude: </string>
+    <string name="saved_on_device">Saved on device as:</string>
+    <string name="view_online">Click to view online: </string>
     <string name="date">Date: </string>
     <string name="favorite_name">Give Title</string>
     <string name="is_empty">Cant be empty!</string>

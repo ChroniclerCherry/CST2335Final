@@ -11,15 +11,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".NewsReaderSearch"/>
-        <activity android:name=".NewsReaderFaves"/>
-        <activity android:name=".EmptyActivity"/>
-        <activity android:name=".NASADailyLoading"></activity>
-        <activity android:name=".NASADailyEmptyActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".BingFavoritesDetails"></activity>
+        <activity android:name=".BingPicture" />
+        <activity android:name=".NewsReaderSearch" />
+        <activity android:name=".NewsReaderFaves" />
+        <activity android:name=".EmptyActivity" />
+        <activity android:name=".NASADailyLoading" />
+        <activity android:name=".NASADailyEmptyActivity" />
         <activity android:name=".NASADailyFavourites" />
-        <activity android:name=".Favorites_List"></activity>
+        <activity android:name=".Favorites_List" />
         <activity android:name=".Nasa_Earthy_Image_Db" />
         <activity android:name=".MainActivity">
             <intent-filter>
