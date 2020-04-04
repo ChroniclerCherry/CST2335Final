@@ -118,7 +118,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         TextView header = navigationView.getHeaderView(0).findViewById(R.id.header_info);
-        header.setText("ENTER YOUR INFO HERE");//TODO
+        header.setText("Bing Virtual Earth Imagery\nAuthor: Karl Rezansoff\nVersion 1.0");
         navigationView.setNavigationItemSelectedListener(this);
 
         //Widgets
