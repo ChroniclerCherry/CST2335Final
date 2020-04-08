@@ -72,4 +72,6 @@
     <string name="ViewLastArticle">Voir l\'article précédent</string>
     <string name="BBC_help">" Cliquez sur un article pour afficher les détails et enregistrer dans les favoris"</string>
     <string name="BBC_note_hint">" Ajouter une note"</string>
+    <string name="search">Trouve</string>
+    <string name="clear">Clair</string>
 </resources>
