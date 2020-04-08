@@ -19,7 +19,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,19 +26,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class Favorites_List extends AppCompatActivity {
+public class BingFavoritesList extends AppCompatActivity {
     /**
      * Adapter used for updating the ListView
      */
@@ -80,7 +76,7 @@ public class Favorites_List extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorites__list);
+        setContentView(R.layout.bing_activity_favorites__list);
 
         //Show the toolbar
         tbar = findViewById(R.id.toolbar);
@@ -131,7 +127,7 @@ public class Favorites_List extends AppCompatActivity {
                 nextActivity.putExtras(dataToPass); //send data to next activity
                 startActivity(nextActivity); //make the transition
             } else {
-                DetailsFragment dFragment = new DetailsFragment(); //Creating the fragment
+                BingDetailsFragment dFragment = new BingDetailsFragment(); //Creating the fragment
                 dFragment.setArguments(dataToPass); //Passing the bundle of information
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -243,21 +239,21 @@ public class Favorites_List extends AppCompatActivity {
      */
     private void loadDataFromDatabase() {
         //Get db connection
-        Earthy_Image_MyOpener dbOpener = new Earthy_Image_MyOpener(this);
+        BingDBMyOpener dbOpener = new BingDBMyOpener(this);
         db = dbOpener.getWritableDatabase();
 
         //Array to store column names
-        String[] columns = {Earthy_Image_MyOpener.COL_ID, Earthy_Image_MyOpener.LATITUDE, Earthy_Image_MyOpener.LONGITUDE, Earthy_Image_MyOpener.URL_PATH, Earthy_Image_MyOpener.FILE_PATH};
+        String[] columns = {BingDBMyOpener.COL_ID, BingDBMyOpener.LATITUDE, BingDBMyOpener.LONGITUDE, BingDBMyOpener.URL_PATH, BingDBMyOpener.FILE_PATH};
 
         //Query for all results
-        Cursor results = db.query(false,Earthy_Image_MyOpener.TABLE_NAME,columns,null,null,null,null,null,null);
+        Cursor results = db.query(false, BingDBMyOpener.TABLE_NAME,columns,null,null,null,null,null,null);
 
         //Getting column indices
-        int latitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LATITUDE);
-        int longitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LONGITUDE);
-        int urlPathIndex = results.getColumnIndex(Earthy_Image_MyOpener.URL_PATH);
-        int colIndex = results.getColumnIndex(Earthy_Image_MyOpener.COL_ID);
-        int filePathIndex = results.getColumnIndex(Earthy_Image_MyOpener.FILE_PATH);
+        int latitudeIndex = results.getColumnIndex(BingDBMyOpener.LATITUDE);
+        int longitudeIndex = results.getColumnIndex(BingDBMyOpener.LONGITUDE);
+        int urlPathIndex = results.getColumnIndex(BingDBMyOpener.URL_PATH);
+        int colIndex = results.getColumnIndex(BingDBMyOpener.COL_ID);
+        int filePathIndex = results.getColumnIndex(BingDBMyOpener.FILE_PATH);
 
         //Iterate over results, return true if next item
         while (results.moveToNext()) {
@@ -277,7 +273,7 @@ public class Favorites_List extends AppCompatActivity {
      * @param earthyImage object, will use database id attribute in the query.
      */
     private void deleteFavorite(EarthyImage earthyImage) {
-        db.delete(Earthy_Image_MyOpener.TABLE_NAME, Earthy_Image_MyOpener.COL_ID + "= ?", new String[] {Long.toString(earthyImage.getId())});
+        db.delete(BingDBMyOpener.TABLE_NAME, BingDBMyOpener.COL_ID + "= ?", new String[] {Long.toString(earthyImage.getId())});
     }
 
     /**

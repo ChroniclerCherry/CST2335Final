@@ -196,7 +196,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(NASADailyFavourites.this, Nasa_Earthy_Image_Db.class);
+                Intent gotoEarth = new Intent(NASADailyFavourites.this, Bing_Virtual_Earth.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:
@@ -237,7 +237,7 @@ public class NASADailyFavourites extends AppCompatActivity implements Navigation
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(NASADailyFavourites.this, Nasa_Earthy_Image_Db.class);
+                Intent gotoEarth = new Intent(NASADailyFavourites.this, Bing_Virtual_Earth.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:

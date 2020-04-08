@@ -18,8 +18,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -43,15 +41,15 @@ public class BingFavoritesDetails extends AppCompatActivity {
 
         //Getting data from bundle
         Bundle dataFromActivity = getIntent().getExtras();
-        String latitude = dataFromActivity.getString(Favorites_List.LATITUDE);
-        String longitude = dataFromActivity.getString(Favorites_List.LONGITUDE);
-        String url = dataFromActivity.getString(Favorites_List.URL_PATH);
-        String filePath = dataFromActivity.getString(Favorites_List.FILE_PATH);
+        String latitude = dataFromActivity.getString(BingFavoritesList.LATITUDE);
+        String longitude = dataFromActivity.getString(BingFavoritesList.LONGITUDE);
+        String url = dataFromActivity.getString(BingFavoritesList.URL_PATH);
+        String filePath = dataFromActivity.getString(BingFavoritesList.FILE_PATH);
 
         //Changing widget values
         latitudeTextView.setText(getResources().getString(R.string.latitude) + " " + latitude);
         longitudeTextView.setText(getResources().getString(R.string.longitude) + " " + longitude);
-        urlTextView.setText(getResources().getString(R.string.view_online) + " " + dataFromActivity.getString(Favorites_List.URL_PATH));
+        urlTextView.setText(getResources().getString(R.string.view_online) + " " + dataFromActivity.getString(BingFavoritesList.URL_PATH));
         filePathTextView.setText(getResources().getString(R.string.saved_on_device) + " " + filePath);
 
         //getting image from local storage

@@ -44,7 +44,7 @@ public class NewsReaderFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_details, container, false);
+        //return inflater.inflate(R.layout.bing_fragment_details, container, false);
         dataFromActivity = getArguments();
         title = dataFromActivity.getString("Title");
         desc = dataFromActivity.getString("Desc");

@@ -21,8 +21,8 @@
         <activity android:name=".NASADailyLoading" />
         <activity android:name=".NASADailyEmptyActivity" />
         <activity android:name=".NASADailyFavourites" />
-        <activity android:name=".Favorites_List" />
-        <activity android:name=".Nasa_Earthy_Image_Db" />
+        <activity android:name=".BingFavoritesList" />
+        <activity android:name=".Bing_Virtual_Earth" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

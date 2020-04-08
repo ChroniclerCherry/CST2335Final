@@ -11,9 +11,7 @@
 package com.example.cst2335final;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,9 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -100,8 +96,8 @@ public class BingPicture extends AppCompatActivity {
 
         //Getting data from bundle
         dataFromActivity = getIntent().getExtras();
-        latitude = dataFromActivity.getString(Nasa_Earthy_Image_Db.LATITUDE);
-        longitude = dataFromActivity.getString(Nasa_Earthy_Image_Db.LONGITUDE);
+        latitude = dataFromActivity.getString(Bing_Virtual_Earth.LATITUDE);
+        longitude = dataFromActivity.getString(Bing_Virtual_Earth.LONGITUDE);
 
         //Getting widgets from activity_bing_picture.xml
         bingPicture = findViewById(R.id.bing_picture);
@@ -116,17 +112,17 @@ public class BingPicture extends AppCompatActivity {
         imageQuery.execute(earthyImageUrl);
 
         favButton.setOnClickListener( v -> {
-            Earthy_Image_MyOpener dbOpener = new Earthy_Image_MyOpener(this);
+            BingDBMyOpener dbOpener = new BingDBMyOpener(this);
             db = dbOpener.getWritableDatabase();
             //add a new row to the db
             ContentValues newRowValues = new ContentValues();
             //provide a value for the db columns
-            newRowValues.put(Earthy_Image_MyOpener.FILE_PATH, filePath);
-            newRowValues.put(Earthy_Image_MyOpener.LATITUDE, latitude);
-            newRowValues.put(Earthy_Image_MyOpener.LONGITUDE, longitude);
-            newRowValues.put(Earthy_Image_MyOpener.URL_PATH, imageURL);
+            newRowValues.put(BingDBMyOpener.FILE_PATH, filePath);
+            newRowValues.put(BingDBMyOpener.LATITUDE, latitude);
+            newRowValues.put(BingDBMyOpener.LONGITUDE, longitude);
+            newRowValues.put(BingDBMyOpener.URL_PATH, imageURL);
             //insert into db
-            db.insert(Earthy_Image_MyOpener.TABLE_NAME, null, newRowValues);
+            db.insert(BingDBMyOpener.TABLE_NAME, null, newRowValues);
 
             Toast errorToast = Toast.makeText(BingPicture.this, getResources().getString(R.string.add_snackbar), Toast.LENGTH_SHORT);
             errorToast.show();

@@ -13,7 +13,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
+public class BingDBMyOpener extends SQLiteOpenHelper {
     /**
      * {@value} Constant for name of the database
      */
@@ -51,7 +51,7 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
      * Class contructor
      * @param ctx Context of current activity
      */
-    public Earthy_Image_MyOpener(Context ctx)
+    public BingDBMyOpener(Context ctx)
     {
         super(ctx, DATABASE_NAME, null, VERSION_NUM);
     }

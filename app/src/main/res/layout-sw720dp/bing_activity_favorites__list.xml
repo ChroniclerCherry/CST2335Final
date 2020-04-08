@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Favorites_List"
+    tools:context=".BingFavoritesList"
     android:background="#daebe8">
 
     <androidx.appcompat.widget.Toolbar

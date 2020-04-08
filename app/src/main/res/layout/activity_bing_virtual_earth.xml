@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Nasa_Earthy_Image_Db"
+    tools:context=".Bing_Virtual_Earth"
     android:orientation="vertical"
     android:background="#daebe8">
 

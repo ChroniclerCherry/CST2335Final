@@ -19,23 +19,15 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -43,24 +35,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-public class Nasa_Earthy_Image_Db extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class Bing_Virtual_Earth extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     /**
      * Represents the "search" button in activity_nasa_earthy_image_db.xml.
      */
@@ -102,7 +78,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nasa__earthy__image__db);
+        setContentView(R.layout.activity_bing_virtual_earth);
 
         //Show the toolbar
         tbar = findViewById(R.id.toolbar);
@@ -159,7 +135,7 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
         });
 
         //Go to favorites
-        Intent goToFavorites = new Intent(this, Favorites_List.class);
+        Intent goToFavorites = new Intent(this, BingFavoritesList.class);
         favoritesBtn.setOnClickListener( click -> startActivity(goToFavorites));
 
     } //end of onCreate method
@@ -197,22 +173,22 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
         switch(item.getItemId())
         {
             case R.id.home:
-                Intent goHome = new Intent(Nasa_Earthy_Image_Db.this, MainActivity.class);
+                Intent goHome = new Intent(Bing_Virtual_Earth.this, MainActivity.class);
                 startActivity(goHome);
                 break;
             case R.id.bbc:
-                Intent gotoBbc = new Intent(Nasa_Earthy_Image_Db.this, NewsReaderSearch.class);
+                Intent gotoBbc = new Intent(Bing_Virtual_Earth.this, NewsReaderSearch.class);
                 startActivity(gotoBbc);
                 break;
             case R.id.guardian:
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(Nasa_Earthy_Image_Db.this, Nasa_Earthy_Image_Db.class);
+                Intent gotoEarth = new Intent(Bing_Virtual_Earth.this, Bing_Virtual_Earth.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:
-                Intent gotoSpace = new Intent(Nasa_Earthy_Image_Db.this, NASADailyFavourites.class);
+                Intent gotoSpace = new Intent(Bing_Virtual_Earth.this, NASADailyFavourites.class);
                 startActivity(gotoSpace);
                 break;
             case R.id.help:
@@ -242,18 +218,18 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
         switch(item.getItemId())
         {
             case R.id.bbc:
-                Intent gotoBbc = new Intent(Nasa_Earthy_Image_Db.this, NewsReaderSearch.class);
+                Intent gotoBbc = new Intent(Bing_Virtual_Earth.this, NewsReaderSearch.class);
                 startActivity(gotoBbc);
                 break;
             case R.id.guardian:
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(Nasa_Earthy_Image_Db.this, Nasa_Earthy_Image_Db.class);
+                Intent gotoEarth = new Intent(Bing_Virtual_Earth.this, Bing_Virtual_Earth.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:
-                Intent gotoSpace = new Intent(Nasa_Earthy_Image_Db.this, NASADailyFavourites.class);
+                Intent gotoSpace = new Intent(Bing_Virtual_Earth.this, NASADailyFavourites.class);
                 startActivity(gotoSpace);
                 break;
         }
