@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -35,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main class for the BBC news reader app.
@@ -50,6 +55,9 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     private NewsListAdapter newsListAdapter;
     private Button faveListBtn;
     private Button backBtn;
+    private EditText searchBox;
+    private Button clear;
+    private NewsListFilter newsListFilter;
 
     private int lastSelectedArticle;
     SharedPreferences prefs;
@@ -105,8 +113,35 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
            startActivity(nextActivity); //make the transition
         });
 
+        searchBox = findViewById(R.id.searchBox);
+
+        /**
+         * searchBox listen to filter news list
+         * @param TextWatch - used to watch searchBox for input
+         */
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                newsListAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         backBtn = findViewById(R.id.backToMain);
-        backBtn.setOnClickListener(click -> finish());
+        /**
+         * click listener for back button to gp back to main page
+         */
+        backBtn.setOnClickListener(click -> {
+                    Intent goToHome = new Intent(NewsReaderSearch.this, MainActivity.class);
+                    startActivity(goToHome);
+                });
 
         faveListBtn = findViewById(R.id.goToFaveList);
         /**
@@ -119,6 +154,21 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
 
         prefs = getSharedPreferences("NewsReaderLastArticle", Context.MODE_PRIVATE);
         lastSelectedArticle = prefs.getInt("LastViewed",0);
+
+        prefs = getSharedPreferences("Search", Context.MODE_PRIVATE);
+        edit = prefs.edit();
+
+        searchBox.setText(prefs.getString("search", ""));
+
+        clear = findViewById(R.id.clear);
+        /**
+         * click listener for clear text from search and reset listview
+         */
+        clear.setOnClickListener (click ->  {
+            Intent goToNewsReader = new Intent(NewsReaderSearch.this, NewsReaderSearch.class);
+            searchBox.setText("");
+            startActivity(goToNewsReader);
+        });
 
         /**
          * on Item Click listener for button to go to last article viewed
@@ -154,7 +204,8 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     }
 
     /**
-     * on Pause
+     * Called when the activity loses foreground state, is no longer focusable or before transition to stopped/hidden or destroyed state
+     * https://developer.android.com/reference/android/app/Activity#onPause()
      */
     @Override
     protected void onPause() {
@@ -162,6 +213,8 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         edit = prefs.edit();
         edit.putInt("LastViewed",lastSelectedArticle);
         edit.apply();
+        edit.putString("search", searchBox.getText().toString());
+        edit.commit();
     }
 
     /**
@@ -186,7 +239,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(NewsReaderSearch.this, Bing_Virtual_Earth.class);
+                Intent gotoEarth = new Intent(NewsReaderSearch.this, Nasa_Earthy_Image_Db.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:
@@ -227,7 +280,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(NewsReaderSearch.this, Bing_Virtual_Earth.class);
+                Intent gotoEarth = new Intent(NewsReaderSearch.this, Nasa_Earthy_Image_Db.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:
@@ -247,7 +300,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
      * inner class for NewsListAdapter
      */
     //Adapter to inflate view
-    class NewsListAdapter extends BaseAdapter {
+    class NewsListAdapter extends BaseAdapter implements Filterable {
         //returns the number of items to display in the list.
         @Override
         public int getCount() {
@@ -280,9 +333,70 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
 
             return newsView;
         }
+
+        public Filter getFilter() {
+            if(newsListFilter == null)
+                newsListFilter = new NewsListFilter();
+            return newsListFilter;
+        }
     }
 
-    //connects to website, searches tags in xml for strings required
+    /**
+     * inner class for Filtering listview
+     */
+    //tutorial https://www.survivingwithandroid.com/android-listview-custom-filter/
+    public class NewsListFilter extends Filter {
+        List<NewsReaderItem> filteredNews;
+
+        //filter the results according to the constraint
+
+        /**
+         * method to filter the data according to the pattern
+         * @param constraint
+         * @return
+         */
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            if (constraint == null || constraint.length() == 0) {
+                results.values = newsTitles;
+                results.count = newsTitles.size();
+            } else {
+                //create new list
+                filteredNews = new ArrayList<>();
+                for (NewsReaderItem nri : newsTitles) {
+                    //if title contains search string
+                    if (nri.getTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        //add it to new filtered list
+                        filteredNews.add(nri);
+                    }
+                    results.values = filteredNews;
+                    results.count = filteredNews.size();
+                }
+            }
+                return results;
+        }
+
+        /**
+         * publishes the filter results
+         * @param constraint
+         * @param results
+         */
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            //inform the adapter
+            if (results.count == 0)
+                newsListAdapter.notifyDataSetInvalidated();
+            else {
+                newsTitles = (ArrayList<NewsReaderItem>)results.values;
+                newsListAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    /**
+     * class to handle query of website and scrape/create NewsReader items in background
+     */
     public class NewsQuery extends AsyncTask<String, Integer, String> {
         private String title; //article title
         private String description; //description of article
@@ -290,6 +404,11 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         private String link;
         private ProgressBar progbar;
 
+        /**
+         * used to perform background computations that can take a long time
+         * @param strings
+         * @return results of computation
+         */
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -299,7 +418,6 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 //wait for data
                 InputStream response = urlConnection.getInputStream();
-                //From part 3: slide 19
                 XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                 factory.setNamespaceAware(true);
                 XmlPullParser xpp = factory.newPullParser();
@@ -314,7 +432,6 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
                 while (eventType != XmlPullParser.END_DOCUMENT){
                     switch (eventType){
                         case XmlPullParser.START_TAG:
-                            //Thread.sleep(10);
                             if(xpp.getName().equalsIgnoreCase("item")){
                                  newsItem = new NewsReaderItem();
                             }
@@ -366,11 +483,19 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
             return "done";
         }
 
+        /**
+         * publishes updates
+         * @param args
+         */
         public void onProgressUpdate(Integer... args) {
             progbar = findViewById(R.id.progressBar);
            progbar.setVisibility(View.VISIBLE);
         }
 
+        /**
+         * runs after doInBackground completes
+         * @param fromDoInBackground
+         */
         public void onPostExecute(String fromDoInBackground) {
             newsListAdapter.notifyDataSetChanged();
             progbar.setVisibility(View.INVISIBLE);

@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,7 +28,25 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent" >
 
-    <Button
+            <!-- Editext for Search -->
+
+            <EditText
+                android:id="@+id/searchBox"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                />
+
+            <Button
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/searchBox"
+                android:layout_alignParentRight="true"
+                android:text="@string/clear"
+                android:textAllCaps="false" />
+
+            <Button
         android:id="@+id/backToMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,8 +59,9 @@
                 android:id="@+id/viewLastArticle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/backToMain"
+
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:text="@string/ViewLastArticle"
                 android:textAllCaps="false" />
 
@@ -63,6 +84,7 @@
         android:id="@+id/newsList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/searchBox"
         android:layout_above="@id/backToMain"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
