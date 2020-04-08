@@ -74,4 +74,5 @@
     <string name="BBC_note_hint">" Ajouter une note"</string>
     <string name="search">Trouve</string>
     <string name="clear">Clair</string>
+    <string name="NASADaily_favouritesText">Vos favoris:</string>
 </resources>
