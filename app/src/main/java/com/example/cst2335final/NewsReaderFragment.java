@@ -2,7 +2,6 @@ package com.example.cst2335final;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,12 +10,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment that displays the article details
+ * @Author Lia Brophy
+ * @Version 1.0
+ * @Date 2020-04-01
+ */
 public class NewsReaderFragment extends Fragment {
 
     private Bundle dataFromActivity;
@@ -27,9 +30,15 @@ public class NewsReaderFragment extends Fragment {
     private String link;
     private String note;
     private ContentValues newRow = new ContentValues();
-
     private AppCompatActivity parentActivity;
 
+    /**
+     * Sets up and displays article details and allows user to save to favourites
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,7 +103,7 @@ public class NewsReaderFragment extends Fragment {
 
             long newId = db.insert(NewsReaderOpener.TABLE_NAME, null, newRow);
             //Show the item was inserted
-            Snackbar.make(faveBtn, "You added an item to favourites ", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(faveBtn, R.string.add_to_favorites, Snackbar.LENGTH_SHORT).show();
         });
 
         // get the back button, and add a click listener to finish and go back to the list of titles
@@ -108,6 +117,10 @@ public class NewsReaderFragment extends Fragment {
         return result;
     }
 
+    /**
+     * called once the fragment is associated with its activity
+     * @param context
+     */
         @Override
         public void onAttach (Context context){
             super.onAttach(context);

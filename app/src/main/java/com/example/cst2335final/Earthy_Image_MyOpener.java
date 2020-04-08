@@ -27,14 +27,6 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
      */
     public final static String TABLE_NAME = "Images";
     /**
-     * {@value} Constant for the name of the date column.
-     */
-    public final static String DATE = "date";
-    /**
-     * {@value} Constant for the name of the name column.
-     */
-    public final static String NAME = "name";
-    /**
      * {@value} Constant for the name of the latitude column.
      */
     public final static String LATITUDE = "latitude";
@@ -50,6 +42,10 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
      * {@value} Constant for the name of the url column
      */
     public final static String URL_PATH = "url_path";
+    /**
+     * {@value} Constant for the name of the file path column
+     */
+    public final static String FILE_PATH = "file_path";
 
     /**
      * Class contructor
@@ -68,8 +64,7 @@ public class Earthy_Image_MyOpener extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + URL_PATH + " text,"
-                + NAME + " text,"
-                + DATE + " text,"
+                + FILE_PATH + " text,"
                 + LATITUDE  + " text,"
                 + LONGITUDE + " text);");  // add or remove columns
     }

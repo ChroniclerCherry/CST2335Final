@@ -37,6 +37,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * Main class for the BBC news reader app.
+ * List of titles are presented for user to click for
+ * more details
+ *  @Author Lia Brophy
+ *  @Version 1.0
+ *  @Date 2020-04-01
+ */
 public class NewsReaderSearch extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ArrayList<NewsReaderItem> newsTitles = new ArrayList<>();
@@ -61,6 +69,10 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         return true;
     }
 
+    /**
+     * set up for NewsReader list
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +90,9 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
        NewsQuery req = new NewsQuery();
        req.execute("http://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml");
 
-       //on Item Click listener for rows to get news item details
+        /**
+         * on Item Click listener for rows to get news item details
+         */
        newsList.setOnItemClickListener((parent, view, position, id) -> {
            lastSelectedArticle = position;
 
@@ -96,6 +110,9 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         backBtn.setOnClickListener(click -> finish());
 
         faveListBtn = findViewById(R.id.goToFaveList);
+        /**
+         * on Item Click listener for fave button
+         */
         faveListBtn.setOnClickListener(click -> {
            Intent goToFaves = new Intent(NewsReaderSearch.this, NewsReaderFaves.class);
             startActivity(goToFaves);
@@ -104,7 +121,9 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         prefs = getSharedPreferences("NewsReaderLastArticle", Context.MODE_PRIVATE);
         lastSelectedArticle = prefs.getInt("LastViewed",0);
 
-        //button to go to last article viewed
+        /**
+         * on Item Click listener for button to go to last article viewed
+         */
         Button viewLastButton = findViewById(R.id.viewLastArticle);
         viewLastButton.setOnClickListener(clk -> {
             Bundle dataToPass = new Bundle();
@@ -135,6 +154,9 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * on Pause
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -176,7 +198,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                 alertDialogBuilder.setTitle(R.string.title_bbc)
                         //Message
-                        .setMessage("this is an example message for instructions") //TODO: ADD INSTRUCTIONS FOR YOUR ACTIVITY
+                        .setMessage(R.string.BBC_help)
                         //what the Yes button does:
                         .setPositiveButton(getResources().getString(R.string.ok), (click, arg) -> { })
                         //Show the dialog
@@ -222,6 +244,9 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
         return false;
     }
 
+    /**
+     * inner class for NewsListAdapter
+     */
     //Adapter to inflate view
     class NewsListAdapter extends BaseAdapter {
         //returns the number of items to display in the list.

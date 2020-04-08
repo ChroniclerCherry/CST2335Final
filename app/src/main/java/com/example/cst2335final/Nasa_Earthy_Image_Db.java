@@ -66,17 +66,9 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
      */
     private Button searchBtn;
     /**
-     * Represents the "view favorites" button in activity_nasa_earthy_image_db.xml.
+     * Represents the "Go to favorites" button in activity_nasa_earthy_image_db.xml
      */
-     private Button favoritesBtn;
-    /**
-     * Represents the "add to favorites" button in activity_nasa_earthy_image_db.xml.
-     */
-    private Button addToFavoritesBtn;
-    /**
-     * Represents the "give title" edit text in activity_nasa_earthy_image_db.xml.
-     */
-    private EditText favNameEditText;
+    private Button favoritesBtn;
     /**
      * Represents the latitude input box in activity_nasa_earthy_image_db.xml.
      */
@@ -86,29 +78,13 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
      */
     private EditText longitudeEditText;
     /**
-     * Represents the image placeholder in activity_nasa_earthy_image_db.xml.
+     * String key for latitude for passing data in the bundle
      */
-    ImageView imageImageView;
+    public static final String LATITUDE = "LATITUDE";
     /**
-     * TextView variable for latitude that will show after search button is pressed and query is executed.
+     * String key for longitude used for passing data in the bundle
      */
-    TextView latitudeTextView;
-    /**
-     *TextView variable for longitude that will show after the search button is pressed and query is executed.
-     */
-    TextView longitudeTextView;
-    /**
-     * TextView variable for showing the url path of the image
-     */
-    TextView urlPathTextView;
-    /**
-     * SQLiteDatabase variable for accessing our database.
-     */
-    SQLiteDatabase db;
-    /**
-     *Progress bar variable for the progress bar in activity_nasa_earthy_image_db.xml.
-     */
-    private ProgressBar progressBar;
+    public static final String LONGITUDE = "LONGITUDE";
     /**
      * SharedPreferences variable for storing latitude and longitude strings
      */
@@ -142,21 +118,12 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         TextView header = navigationView.getHeaderView(0).findViewById(R.id.header_info);
-        header.setText("ENTER YOUR INFO HERE");//TODO
+        header.setText("Bing Virtual Earth Imagery\nAuthor: Karl Rezansoff\nVersion 1.0");
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Widgets in top portion
-        addToFavoritesBtn = findViewById(R.id.add_to_favorites_btn);
-        imageImageView = findViewById(R.id.earthy_image);
-        latitudeTextView = findViewById(R.id.latitude_textView);
-        longitudeTextView = findViewById(R.id.longitude_textView);
-        urlPathTextView = findViewById(R.id.url_path_textView);
-        progressBar = findViewById(R.id.progress_bar);
-
-        //Widgets in input section
+        //Widgets
         searchBtn = findViewById(R.id.search_btn);
         favoritesBtn = findViewById(R.id.view_saved_img_btn);
-        favNameEditText = findViewById(R.id.name_favorite);
         latitudeEditText = findViewById(R.id.enter_latitude);
         longitudeEditText = findViewById(R.id.enter_longitude);
 
@@ -172,52 +139,23 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
                 latitudeEditText.setError(getResources().getString(R.string.is_empty));;
                 return;
             }
-
             if (isEmpty(longitudeEditText)) {
                 longitudeEditText.setError(getResources().getString(R.string.is_empty));;
                 return;
             }
 
-            //make progress bar visible
-            progressBar.setVisibility(View.VISIBLE);
-
-            //calling imageQuery to get values from api
-            String earthyImageUrl = "http://dev.virtualearth.net/REST/V1/Imagery/Map/Birdseye/" + latitudeEditText.getText().toString() + "," + longitudeEditText.getText().toString() + "/20?dir=180&ms=500,500&key=AiBIAQNVppJbc9JGabgjwN_qAWp59x9hhmYI5cDSxvf-IbKJkERsFka3_Gn9trNH";
-            ImageQuery imageQuery = new ImageQuery();
-            imageQuery.execute(earthyImageUrl);
-
             //saving input for shared preferences
             saveSharedPrefs(latitudeEditText.getText().toString(), longitudeEditText.getText().toString());
-        });
 
-        //Add to Favorites
-        addToFavoritesBtn.setOnClickListener((click) -> {
-            String latitude = latitudeTextView.getText().toString().split(" ")[1]; //only storing number, trimming out the rest of text
-            String longitude = longitudeTextView.getText().toString().split(" ")[1];
-            String name = favNameEditText.getText().toString();
-            String urlPath = urlPathTextView.getText().toString();
+            //Creating bundle to pass data
+            Bundle dataToPass = new Bundle();
+            dataToPass.putString(LONGITUDE, longitudeEditText.getText().toString());
+            dataToPass.putString(LATITUDE, latitudeEditText.getText().toString());
 
-            if (!isEmpty(favNameEditText)) {
-                    //Get a db connection
-                    Earthy_Image_MyOpener dbOpener = new Earthy_Image_MyOpener(this);
-                    db = dbOpener.getWritableDatabase();
-
-                    //add new row to db
-                    ContentValues newRowValues = new ContentValues();
-
-                    //value for db columns
-                    newRowValues.put(Earthy_Image_MyOpener.LATITUDE, latitude);
-                    newRowValues.put(Earthy_Image_MyOpener.LONGITUDE, longitude);
-                    newRowValues.put(Earthy_Image_MyOpener.NAME, name);
-                    newRowValues.put(Earthy_Image_MyOpener.URL_PATH, urlPath);
-
-                    //insert into db which returns id
-                    long newId = db.insert(Earthy_Image_MyOpener.TABLE_NAME, null, newRowValues);
-
-                    Snackbar addToDbSnackbar = Snackbar.make(addToFavoritesBtn, getResources().getString(R.string.add_snackbar), Snackbar.LENGTH_SHORT);
-                    addToDbSnackbar.show();
-            }
-            else favNameEditText.setError(getResources().getString(R.string.is_empty));
+            //load new activity
+                Intent nextActivity = new Intent(this, BingPicture.class);
+                nextActivity.putExtras(dataToPass); //send data to next activity
+                startActivity(nextActivity); //make the transition
         });
 
         //Go to favorites
@@ -337,134 +275,5 @@ public class Nasa_Earthy_Image_Db extends AppCompatActivity implements Navigatio
         editor.putString("latitudeString", stringLatitude);
         editor.putString("longitudeString", stringLongitude);
         editor.commit();
-    }
-
-    /**
-     * Class extends from AsyncTask and is used for performing the image query with Google's Earthy Image API,
-     * modifying the TextViews with query results, and will update a progress bar as data is retrieved.
-     */
-    private class ImageQuery extends AsyncTask<String, Integer, String> {
-        /**
-         * String for latitude.
-         */
-        private String latitude;
-        /**
-         * String for longitude.
-         */
-        private String longitude;
-        /**
-         * String for imageUrl. API will return a seperate url to retrieve the image.
-         */
-        private String imageUrl;
-        /**
-         * Bitmap object to store the image from the API.
-         */
-        private Bitmap image;
-        /**
-         * String to store error message while loading from api.
-         */
-        private String returnString = null;
-        /**
-         * String value used to name the image when we save to the device
-         */
-        private String fileName = latitudeEditText.getText().toString() + longitudeEditText.getText().toString() + ".png";
-
-        /**
-         * Query using Google's Earthy Image API done in this method, and will set values for date, latitude, longitude, imageUrl, and image.
-         * @param args Passing a single string parameter being the API url with the latitude and longitude values from the user.
-         * @return String error message
-         */
-        @Override
-        protected String doInBackground(String... args) {
-            String returnString = null;
-            imageUrl = args[0];
-
-            try {
-                //If file exists we download from server
-                if(!fileExistance(fileName)) {
-                    image = null;
-                    URL url = new URL(args[0]);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode == 200) {
-                        image = BitmapFactory.decodeStream(connection.getInputStream());
-                    }
-                    //And then save to local storage
-                    FileOutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
-                    image.compress(Bitmap.CompressFormat.PNG, 80, outputStream);
-                    outputStream.flush();
-                    outputStream.close();
-                }
-                else { //else we download image from local storage
-                    FileInputStream fis = null;
-                    try {
-                        fis = openFileInput(fileName);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    image = BitmapFactory.decodeStream(fis);
-                }
-                publishProgress(75);
-            }
-            // find a way to inform user error was made and not let it crash - bad params (lat 2, long 77)
-            catch (FileNotFoundException fnfe) {
-                return returnString = "FileNotFoundException";
-            } catch (MalformedURLException mfe) {
-                return returnString = "MalFormed URL exception";
-            } catch (IOException ioe) {
-                return returnString = "IOException";
-            } catch (Exception e) {
-                return returnString = "Exception e error";
-            }
-            publishProgress(100);
-            return returnString;
-        }
-
-        /**
-         * Method to check if a file exists in local storage
-         * @param fname String path o file
-         * @return boolean value to indicate of file exists
-         */
-        public boolean fileExistance(String fname){
-            File file = getBaseContext().getFileStreamPath(fname);
-            return file.exists();
-        }
-
-        /**
-         * Method will update the xml widgets with the values retrieved from doInBackground method (results from API query).
-         * @param sentFromDoInBackground String values from sentFromBackground method.
-         */
-        @Override
-        protected void onPostExecute(String sentFromDoInBackground) {
-            super.onPostExecute(sentFromDoInBackground);
-
-            if(sentFromDoInBackground == null) {
-                imageImageView.setImageBitmap(image);
-                latitudeTextView.setText("Latitude: " + latitudeEditText.getText().toString());
-                longitudeTextView.setText("Longitude: " + longitudeEditText.getText().toString());
-                urlPathTextView.setText(imageUrl);
-                progressBar.setVisibility(View.INVISIBLE);
-                favNameEditText.setVisibility(View.VISIBLE);
-                addToFavoritesBtn.setVisibility(View.VISIBLE);
-            }
-            //A lot of coordinates do not contain images, so we show error toast message to user
-            else {
-                Toast errorToast = Toast.makeText(Nasa_Earthy_Image_Db.this, getResources().getString(R.string.error_toast) + sentFromDoInBackground, Toast.LENGTH_SHORT);
-                errorToast.show();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        }
-
-        /**
-         * Method only is used for updating the progress bar widget and setting it's visability.
-         * @param values
-         */
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress(values[0]);
-        }
     }
     }
