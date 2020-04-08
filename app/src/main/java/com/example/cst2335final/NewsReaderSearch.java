@@ -20,10 +20,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -37,7 +35,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -155,8 +152,8 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
             startActivity(goToFaves);
         });
 
-        //prefs = getSharedPreferences("NewsReaderLastArticle", Context.MODE_PRIVATE);
-       // lastSelectedArticle = prefs.getInt("LastViewed",0);
+        prefs = getSharedPreferences("NewsReaderLastArticle", Context.MODE_PRIVATE);
+        lastSelectedArticle = prefs.getInt("LastViewed",0);
 
         prefs = getSharedPreferences("Search", Context.MODE_PRIVATE);
         edit = prefs.edit();
@@ -213,9 +210,9 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
     @Override
     protected void onPause() {
         super.onPause();
-//        edit = prefs.edit();
-//        edit.putInt("LastViewed",lastSelectedArticle);
-//        edit.apply();
+        edit = prefs.edit();
+        edit.putInt("LastViewed",lastSelectedArticle);
+        edit.apply();
         edit.putString("search", searchBox.getText().toString());
         edit.commit();
     }
