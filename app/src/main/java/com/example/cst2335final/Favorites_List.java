@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -32,6 +33,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -49,12 +52,26 @@ public class Favorites_List extends AppCompatActivity {
      * SQLiteDatabase variable for accessing our database.
      */
     SQLiteDatabase db;
+    /**
+     * Toolbar variable for toolbar from view.
+     */
     Toolbar tbar;
-    public static final String DATE = "DATE";
+    /**
+     * String value used as a key for bundle when passing data to another activity or fragment
+     */
     public static final String LATITUDE = "LATITUDE";
+    /**
+     * String value used as a key for bundle when passing data to another activity or fragment
+     */
     public static final String LONGITUDE = "LONGITUDE";
-    public static final String ID = "ID";
+    /**
+     * String value used as a key for bundle when passing data to another activity or fragment
+     */
     public static final String URL_PATH = "URL_PATH";
+    /**
+     * String value used as a key for bundle when passing data to another activity or fragment
+     */
+    public static final String FILE_PATH = "FILE_PATH";
 
     /**
      * Method will initialize widget variables from xml and call loadDataFromDatabase() to populate the ListView with information from the saved queries.
@@ -100,19 +117,27 @@ public class Favorites_List extends AppCompatActivity {
 
         //Action when clicking a list object
         myList.setOnItemClickListener((list, item, position, id) -> {
-            //Creating bundle to pass data to the new fragment
+            //Creating bundle to pass data to the new fragment or activity
             Bundle dataToPass = new Bundle();
             dataToPass.putString(LATITUDE, elements.get(position).getLatitude());
             dataToPass.putString(LONGITUDE, elements.get(position).getLongitude());
-            dataToPass.putString(ID, Long.toString(elements.get(position).getId()));
             dataToPass.putString(URL_PATH, elements.get(position).getUrlPath());
+            dataToPass.putString(FILE_PATH, elements.get(position).getFilePath());
 
-            DetailsFragment dFragment = new DetailsFragment(); //Creating the fragment
-            dFragment.setArguments(dataToPass); //Passing the bundle of information
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentLocation, dFragment) //Add the fragment in FrameLayout
-                    .commit(); //Load the fragment
+            boolean isTablet = findViewById(R.id.fragmentLocation) != null; // !null if using tablet device
+
+            if(!isTablet) {
+                Intent nextActivity = new Intent(this, BingFavoritesDetails.class);
+                nextActivity.putExtras(dataToPass); //send data to next activity
+                startActivity(nextActivity); //make the transition
+            } else {
+                DetailsFragment dFragment = new DetailsFragment(); //Creating the fragment
+                dFragment.setArguments(dataToPass); //Passing the bundle of information
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentLocation, dFragment) //Add the fragment in FrameLayout
+                        .commit(); //Load the fragment
+            }
         });
 
     } //end of onCreate
@@ -195,9 +220,6 @@ public class Favorites_List extends AppCompatActivity {
             newView = inflater.inflate(R.layout.earthy_image_listview, parent, false);
 
             //set values for the row
-            TextView listViewFavName = newView.findViewById(R.id.listView_favName);
-            listViewFavName.setText(elements.get(position).getName());
-
             //getting image from local storage
             FileInputStream fis = null;
             try {
@@ -208,7 +230,9 @@ public class Favorites_List extends AppCompatActivity {
             Bitmap image = BitmapFactory.decodeStream(fis);
 
             ImageView listViewImage = newView.findViewById(R.id.listView_image);
+            TextView imageText = newView.findViewById(R.id.listView_text);
             listViewImage.setImageBitmap(image);
+            imageText.setText(getResources().getString(R.string.latitude) + " " + elements.get(position).getLatitude() + " , " + getResources().getString(R.string.longitude) + " " + elements.get(position).getLongitude());
 
             return newView;
         }
@@ -223,27 +247,28 @@ public class Favorites_List extends AppCompatActivity {
         db = dbOpener.getWritableDatabase();
 
         //Array to store column names
-        String[] columns = {Earthy_Image_MyOpener.COL_ID, Earthy_Image_MyOpener.NAME, Earthy_Image_MyOpener.DATE, Earthy_Image_MyOpener.LATITUDE, Earthy_Image_MyOpener.LONGITUDE, Earthy_Image_MyOpener.URL_PATH};
+        String[] columns = {Earthy_Image_MyOpener.COL_ID, Earthy_Image_MyOpener.LATITUDE, Earthy_Image_MyOpener.LONGITUDE, Earthy_Image_MyOpener.URL_PATH, Earthy_Image_MyOpener.FILE_PATH};
+
         //Query for all results
         Cursor results = db.query(false,Earthy_Image_MyOpener.TABLE_NAME,columns,null,null,null,null,null,null);
 
         //Getting column indices
-        int nameIndex = results.getColumnIndex(Earthy_Image_MyOpener.NAME);
         int latitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LATITUDE);
         int longitudeIndex = results.getColumnIndex(Earthy_Image_MyOpener.LONGITUDE);
-        int idColIndex = results.getColumnIndex(Earthy_Image_MyOpener.COL_ID);
         int urlPathIndex = results.getColumnIndex(Earthy_Image_MyOpener.URL_PATH);
+        int colIndex = results.getColumnIndex(Earthy_Image_MyOpener.COL_ID);
+        int filePathIndex = results.getColumnIndex(Earthy_Image_MyOpener.FILE_PATH);
 
         //Iterate over results, return true if next item
         while (results.moveToNext()) {
-            String name = results.getString(nameIndex);
             String latitude = results.getString(latitudeIndex);
             String longitude = results.getString(longitudeIndex);
-            long id = results.getLong(idColIndex);
             String urlPath = results.getString(urlPathIndex);
+            long id = results.getLong(colIndex);
+            String filePath = results.getString(filePathIndex);
 
             //add to elements ArrayList
-            elements.add(new EarthyImage(name, latitude, longitude, id, urlPath));
+            elements.add(new EarthyImage(latitude, longitude, id, urlPath, filePath));
         }
     }
 
@@ -260,10 +285,6 @@ public class Favorites_List extends AppCompatActivity {
      */
     private class EarthyImage {
         /**
-         * String name given by the user
-         */
-        private String name;
-        /**
          * String value for latitude of the image.
          */
         private String latitude;
@@ -279,6 +300,10 @@ public class Favorites_List extends AppCompatActivity {
          * String value for image url
          */
         private String urlPath;
+        /**
+         * String value for the image file path
+         */
+        private String filePath;
 
         /**
          * Single class constructor
@@ -286,12 +311,12 @@ public class Favorites_List extends AppCompatActivity {
          * @param longitude String value for longitude
          * @param Id long value for database Id
          */
-        public EarthyImage(String name, String latitude, String longitude, long Id, String urlPath) {
-            this.name = name;
+        public EarthyImage(String latitude, String longitude, long Id, String urlPath, String filePath) {
             this.latitude = latitude;
             this.longitude = longitude;
             this.Id = Id;
             this.urlPath = urlPath;
+            this.filePath = filePath;
         }
 
         /**
@@ -313,15 +338,15 @@ public class Favorites_List extends AppCompatActivity {
         public long getId() { return Id; }
 
         /**
-         * Returns name of image
-         * @return String name
-         */
-        public String getName() { return name; }
-
-        /**
-         * Returns url path of image
-         * @return String url path
+         * Returns url of image
+         * @return String url
          */
         public String getUrlPath() { return urlPath; }
+
+        /**
+         * Returns file path of the image
+         */
+        public String getFilePath() { return filePath; }
+
     }
 }

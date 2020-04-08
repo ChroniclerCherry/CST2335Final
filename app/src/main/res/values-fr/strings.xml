@@ -11,6 +11,8 @@
     <string name="favorites_list">Liste des favoris</string>
     <string name="favorites_list_desc">Préférer une image à enregistrer pour plus tard!</string>
 
+    <string name="saved_on_device">Enregistré sur l\'appareil sous:</string>
+    <string name="view_online">Cliquez pour voir en ligne: </string>
     <string name="latitude">Latitude: </string>
     <string name="longitude">Longitude: </string>
     <string name="date">Date: </string>
