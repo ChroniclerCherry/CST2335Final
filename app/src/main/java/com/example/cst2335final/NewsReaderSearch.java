@@ -239,7 +239,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(NewsReaderSearch.this, Nasa_Earthy_Image_Db.class);
+                Intent gotoEarth = new Intent(NewsReaderSearch.this, Bing_Virtual_Earth.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:
@@ -280,7 +280,7 @@ public class NewsReaderSearch extends AppCompatActivity implements NavigationVie
                 message2 = getText(R.string.error_not_implemented).toString();
                 break;
             case R.id.earth:
-                Intent gotoEarth = new Intent(NewsReaderSearch.this, Nasa_Earthy_Image_Db.class);
+                Intent gotoEarth = new Intent(NewsReaderSearch.this, Bing_Virtual_Earth.class);
                 startActivity(gotoEarth);
                 break;
             case R.id.space:
